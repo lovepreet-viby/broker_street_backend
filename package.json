@@ -1,0 +1,51 @@
+{
+  "name": "fruitvegetablebackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && cp -r ./tsconfig.json ./dist && cp ./package.json ./dist && cp ./src/constants/strong-arbor-367509-firebase-adminsdk-3zmc7-ba5893591b.json ./dist/constants",
+    "build:windows": "tsc && copy tsconfig.json dist\\ && copy package.json dist\\",
+    "start": "node server.js",
+    "start:dev": "node dist/server.js",
+    "dev": "env-cmd -f .env.development nodemon src/server.ts",
+    "seeder": "node src/database/seeds.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.1",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^20.5.0",
+    "@types/nodemailer": "^6.4.13",
+    "@types/speakeasy": "^2.0.9",
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@types/multer": "^1.4.7",
+    "@types/socket.io": "^3.0.2",
+    "@types/uuid": "^9.0.3",
+    "azure-storage": "^2.10.7",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "env-cmd": "^10.1.0",
+    "express": "^4.18.2",
+    "fcm-node": "^1.6.1",
+    "firebase-admin": "^11.11.0",
+    "google-auth-library": "^9.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.4.3",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.6",
+    "path": "^0.12.7",
+    "socket.io": "^4.7.2",
+    "speakeasy": "^2.0.0",
+    "uuid": "^9.0.0"
+  }
+}

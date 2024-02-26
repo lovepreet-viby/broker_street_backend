@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
@@ -10,8 +10,10 @@ function getDynamicPath(fieldName: string) {
   switch (fieldName) {
     case 'user':
       return './uploads/userimage'
-    case 'document':
-        return './uploads/sellPropertyDocument'
+    case 'selldocument':
+      return './uploads/sellPropertyDocument'
+    case 'buydocument':
+      return './uploads/buyPropertyDocument'
     default:
       return './uploads/default';
   }
@@ -30,13 +32,42 @@ const multerStorage = multer.diskStorage({
 });
 
 const multerFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const validFileTypes = /jpg|png|jpeg|svg/;
-  const extname = validFileTypes.test(path.extname(file.originalname).toLowerCase());
+  const extname = path.extname(file.originalname).toLowerCase();
 
-  if (extname === true) {
-    cb(null, true);
-  } else {
-    cb(error('Error: Image Only!') as any, false);
+  if (file.fieldname == 'user') {
+    const validImageTypes = /jpg|png|jpeg|svg/;
+    if (validImageTypes.test(extname)) {
+      cb(null, true);
+    } else {
+      // cb(error('Error: Unsupported image file type!') as any, false);
+      const errorMessage = 'Error: Unsupported image file type!';
+      cb(error(errorMessage) as any, false);
+      (req as any).errorMessage = errorMessage;
+    }
+  } else if (file.fieldname == 'selldocument') {
+    const validDocumentTypes = /pdf|docx/;
+    const validImageTypes = /jpg|png|jpeg|svg/;
+
+    if (validDocumentTypes.test(extname) || validImageTypes.test(extname)) {
+      cb(null, true);
+    } else {
+      const errorMessage = 'Error: Unsupported document file type!';
+      cb(error(errorMessage) as any, false);
+      (req as any).errorMessage = errorMessage;
+    }
+  } else if (file.fieldname === 'buydocument') { // Using 'buyDocument' condition for audio files
+    const validAudioTypes = /mp3|wav|ogg/; // Define valid audio types
+
+    if (validAudioTypes.test(extname)) {
+      cb(null, true);
+    } else {
+      const errorMessage = 'Error: Unsupported audio file type!';
+      cb(error(errorMessage) as any, false);
+      (req as any).errorMessage = errorMessage;
+    }
+  }
+  else {
+    cb(error('Error: Unsupported file type!') as any, false);
   }
 };
 

@@ -7,11 +7,11 @@ import {
     userLogin,
     userDetail,
     updateUserDetail,
-    userProfilePhoto
+    userProfilePhoto,
+    userProperty
 } from "../controllers/users.controller";
 import auth from "../middlewares/auth";
 import upload from "../middlewares/uploadFile";
-
 
 const router = express.Router();
 
@@ -24,10 +24,12 @@ router.post('/checkOtp', checkUserOtp);
 router.post('/resendOtp', resendUserOtp);
 router.post("/signin", userLogin);
 router.get("/detail", userDetail);
+router.put("/update", updateUserDetail); 
 
 
+// property api 
+router.get("/property", userProperty)
 
-router.put("/update", updateUserDetail); // pending which key is update
 
 
 export default router;

@@ -3,6 +3,10 @@ import http from "http";
 import dotenv from "dotenv";
 import auth from "./middlewares/auth";
 import usersRoutes from "./routes/users.routes";
+import sellPropertyRoutes from "./routes/sellPropertys.routes";
+import buyPropertyRoutes from "./routes/buyPropertys.routes";
+
+
 import cors from "cors"; 
 import * as path from 'path';  // Import the 'path' module
 
@@ -26,8 +30,9 @@ app.get("/", (req: Request, res: Response) =>
 );
 
 app.use("/users", usersRoutes);
-//app.use("/fruits", fruitsRoutes);
+app.use("/sellproperty", sellPropertyRoutes);
 
+app.use("/buyproperty", buyPropertyRoutes);
 
 
 

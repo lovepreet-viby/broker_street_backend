@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import * as jwt from 'jsonwebtoken';
-import { verifyOtp, checkByPhoneNumber, createUser,createNewOtp,getUserDetail ,updateUserById} from "../resource/users.resource";
+import { verifyOtp, checkByPhoneNumber, createUser, createNewOtp, getUserDetail, updateUserById, userPropertyDetail } from "../resource/users.resource";
 import { IUser, IUserOtp } from "../interfaces/users.interfaces";
+import { isValidObjectId } from "mongoose";
 
 
 export const getUsers = async (req: Request, res: Response, next: Function) => {
@@ -20,12 +21,16 @@ export const userProfilePhoto = async (
 ) => {
   try {
 
+    if ((req as any).errorMessage) {
+      return res.status(400).send((req as any).errorMessage);
+    }
+
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
-    
-    let filePath  = process.env.BASE_URL+req.file.path
-    return res.status(200).send({Message :"File upload successfully", data:filePath});
+
+    let filePath = process.env.BASE_URL + req.file.path
+    return res.status(200).send({ Message: "File upload successfully", data: filePath });
 
   } catch (err) {
     console.log(err);
@@ -36,13 +41,13 @@ export const userProfilePhoto = async (
 export const userSignUp = async (req: Request, res: Response, next: Function) => {
   try {
 
-    let data = req.body 
+    let data = req.body
 
     let userData: IUser = {
-      firstName : data.firstName,
-      lastName : data.lastName,
+      firstName: data.firstName,
+      lastName: data.lastName,
       email: data.email,
-      phoneNumber : data.phoneNumber,
+      phoneNumber: data.phoneNumber,
       location: data.location
     }
 
@@ -55,27 +60,27 @@ export const userSignUp = async (req: Request, res: Response, next: Function) =>
       return res.status(400).send("Invalid phone number");
     }
 
-    let isCheckPhoneNumber =  await checkByPhoneNumber(userData.phoneNumber)
-    if(isCheckPhoneNumber){
+    let isCheckPhoneNumber = await checkByPhoneNumber(userData.phoneNumber)
+    if (isCheckPhoneNumber) {
       return res.status(400).send("This number already exits");
     }
-    
-    let user =  await createUser(userData) as { _id : string , phoneNumber :number, role : string }
+
+    let user = await createUser(userData) as { _id: string, phoneNumber: number, role: string }
 
     let otpData = await createNewOtp(userData.phoneNumber);
 
-    const secretKey: string  = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
-    let token =  await jwt.sign({
+    const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
+    let token = await jwt.sign({
       user_id: user._id,
-      phoneNumber : user.phoneNumber,
+      phoneNumber: user.phoneNumber,
       role: user.role
-    }, secretKey, { expiresIn : "24h" });
-    
-    if(!user){
+    }, secretKey, { expiresIn: "24h" });
+
+    if (!user) {
       return res.status(400).send(false);
     }
     console.log(otpData.otp)
-    return res.status(200).send({hash : otpData.hash , token : token , phoneNumber:user.phoneNumber , userId: user._id });
+    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: user.phoneNumber, userId: user._id });
 
   } catch (err) {
     console.log(err);
@@ -89,19 +94,19 @@ export const checkUserOtp = async (req: Request, res: Response, next: Function) 
 
 
     let data: IUserOtp = req.body
-    let userData  = {
+    let userData = {
       phoneNumber: data.phoneNumber,
-      otp : data.otp,
-      hash : data.hash
+      otp: data.otp,
+      hash: data.hash
     }
 
     let checkObject = Object.keys(userData).filter((o) => !(userData as any)[o]);
     if (checkObject.length > 0) {
       return res.status(400).send(checkObject);
     }
-   
-    let checkOtp =  await verifyOtp(userData.phoneNumber,userData.hash ,userData.otp )
-    if(!checkOtp){
+
+    let checkOtp = await verifyOtp(userData.phoneNumber, userData.hash, userData.otp)
+    if (!checkOtp) {
       return res.status(400).send(false);
     }
 
@@ -116,8 +121,8 @@ export const checkUserOtp = async (req: Request, res: Response, next: Function) 
 export const resendUserOtp = async (req: Request, res: Response, next: Function) => {
   try {
 
-    let phoneNumber:number= req.body.phoneNumber 
-    if(!phoneNumber){
+    let phoneNumber: number = req.body.phoneNumber
+    if (!phoneNumber) {
       return res.status(400).send("phone number is required");
     }
 
@@ -127,11 +132,11 @@ export const resendUserOtp = async (req: Request, res: Response, next: Function)
     // To Do 
     // messages service function 
     let otpData = await createNewOtp(phoneNumber);
-    if(!otpData){
+    if (!otpData) {
       return res.status(400).send(false);
     }
     console.log(otpData.otp)
-    return res.status(200).send({hash : otpData.hash});
+    return res.status(200).send({ hash: otpData.hash });
 
   } catch (err) {
     console.log(err);
@@ -144,8 +149,8 @@ export const resendUserOtp = async (req: Request, res: Response, next: Function)
 export const userLogin = async (req: Request, res: Response, next: Function) => {
   try {
 
-    let phoneNumber: number = req.body.phoneNumber 
-    if(!phoneNumber){
+    let phoneNumber: number = req.body.phoneNumber
+    if (!phoneNumber) {
       return res.status(400).send("phoneNumber is required");
     }
 
@@ -153,26 +158,26 @@ export const userLogin = async (req: Request, res: Response, next: Function) => 
       return res.status(400).send("Invalid phone number");
     }
 
-    let isCheckPhoneNumber =  await checkByPhoneNumber(phoneNumber) as { _id : string , phoneNumber :number, role : string }
-    if(!isCheckPhoneNumber){
+    let isCheckPhoneNumber = await checkByPhoneNumber(phoneNumber) as { _id: string, phoneNumber: number, role: string }
+    if (!isCheckPhoneNumber) {
       return res.status(400).send("There was no account on this phone number");
     }
     // To do
     // otp send service  
-    
-    const secretKey: string  = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
-    let token =  await jwt.sign({
+
+    const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
+    let token = await jwt.sign({
       user_id: isCheckPhoneNumber._id,
-      phoneNumber : isCheckPhoneNumber.phoneNumber,
+      phoneNumber: isCheckPhoneNumber.phoneNumber,
       role: isCheckPhoneNumber.role
-    }, secretKey, { expiresIn : "24h" });
-    
+    }, secretKey, { expiresIn: "24h" });
+
     let otpData = await createNewOtp(phoneNumber);
-    if(!otpData){
+    if (!otpData) {
       return res.status(400).send(false);
     }
     console.log(otpData.otp)
-    return res.status(200).send({ hash : otpData.hash , token : token,phoneNumber:isCheckPhoneNumber.phoneNumber, userId: isCheckPhoneNumber._id });
+    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: isCheckPhoneNumber.phoneNumber, userId: isCheckPhoneNumber._id });
   } catch (err) {
     console.log(err);
     res.status(500).send("Something went wrong!");
@@ -183,12 +188,12 @@ export const userDetail = async (req: Request, res: Response, next: Function) =>
   try {
 
     let userId: string = req.query.userId as string
-    if(!userId){
+    if (!userId) {
       return res.status(400).send("UserId is required");
     }
 
     let user = await getUserDetail(userId);
-    if(!user){
+    if (!user) {
       return res.status(400).send(false);
     }
     res.status(200).send(user);
@@ -203,15 +208,37 @@ export const updateUserDetail = async (req: Request, res: Response, next: Functi
   try {
 
     let data = req.body
-    let userData = { 
-      firstName : data.firstName,
+    let userData = {
+      firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      location : data.location
+      location: data.location
     }
 
     let user = await updateUserById(req.body.userId, userData);
-    if(!user){
+    if (!user) {
+      return res.status(400).send(false);
+    }
+    res.status(200).send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Something went wrong!");
+  }
+};
+
+export const userProperty = async (req: Request, res: Response, next: Function) => {
+  try {
+
+    const userId: string = req.query?.userId as string;
+    const page: number = parseInt(req.query?.page as string) || 1;
+    const limit: number = parseInt(req.query?.limit as string) || 10;
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).send("Invalid userId");
+    }
+
+    let user = await userPropertyDetail(userId, page, limit);
+    if (!user) {
       return res.status(400).send(false);
     }
     res.status(200).send(user);

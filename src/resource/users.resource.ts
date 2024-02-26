@@ -59,6 +59,43 @@ export const updateUserById = async ( userId:string , data:object ) => {
   return result;
 };
 
+
+export const userPropertyDetail= async ( userId:string,page:number,limit:number) => {
+ 
+  if (!userId) {
+    throw new Error("userid is empty");
+  }
+  
+  let result = await User.aggregate([
+    {
+      $match: { _id: new ObjectId(userId) }
+    },
+    {
+      $lookup: {
+        from: 'sellproperty',
+        localField: '_id', 
+        foreignField: 'userId', 
+        as: 'sellproperty_detail' 
+      }
+    },
+    {
+      $lookup: {
+        from: 'buyproperty',
+        localField: '_id', 
+        foreignField: 'userId', 
+        as: 'buyproperty_detail' 
+      }
+    }
+  ]);
+
+  if (!result) {
+    return false;
+  }
+  return result;
+};
+
+
+
 export const createNewOtp = async (phoneNumber:number) => {
     const key = process.env.OTP_SECRET;
     const otp = Math.floor(100000 + Math.random() * 900000);

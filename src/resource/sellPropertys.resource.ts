@@ -31,3 +31,32 @@ export const getSellPropertyDetail = async (userId: string, page: number, limit:
   return result;
 };
 
+
+
+export const updateSellPropertyDetail= async ( sellPropertyId :string , data: ISellProperty) => {
+ 
+  if (!data) {
+    throw new Error("Data is empty");
+  }
+
+  let result = await SellProperty.findByIdAndUpdate(sellPropertyId, data, { new: true });
+  if (!result) {
+    return false;
+  }
+  return result;
+};
+
+
+export const deleteSellPropertyDetail= async ( sellPropertyId :string) => {
+ 
+  if (!sellPropertyId) {
+    throw new Error("id is empty");
+  }
+
+  let result = await SellProperty.findByIdAndUpdate( sellPropertyId, { isDeleted: true }, { new: true });
+  if (!result) {
+    return false;
+  }
+  return result;
+};
+  

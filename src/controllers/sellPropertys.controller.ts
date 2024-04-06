@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ISellProperty } from "../interfaces/sellProperty.interface";
-import { createSellPropertyDetail, getSellPropertyDetail,updateSellPropertyDetail,deleteSellPropertyDetail } from "../resource/sellPropertys.resource";
+import { createSellPropertyDetail, getAllSellPropertyList,getSellPropertyDetail,updateSellPropertyDetail,deleteSellPropertyDetail } from "../resource/sellPropertys.resource";
 import { isValidObjectId } from "mongoose";
 
 export const createSellProperty = async (req: Request, res: Response, next: Function) => {
@@ -14,6 +14,7 @@ export const createSellProperty = async (req: Request, res: Response, next: Func
             taluka: data.taluka,
             locationURL: data.locationURL,
             uploadFilePath: data.uploadFilePath,
+            uploadImagePath: data.uploadImagePath,
             amount: data.amount,
             descriptions: data.descriptions,
             userId: data.userId
@@ -43,19 +44,21 @@ export const createSellProperty = async (req: Request, res: Response, next: Func
 
 
 
-export const getSellProperty = async (req: Request, res: Response, next: Function) => {
+export const getAllSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
         const userId: string = req.query?.userId as string;
         const page: number = parseInt(req.query?.page as string) || 1; // Default to page 1 if not specified
         const limit: number = parseInt(req.query?.limit as string) || 10; // Default page size to 10 if not specified
+        const searchkey: string = req.query?.searchkey as string
+
 
         if (!isValidObjectId(userId)) {
             return res.status(400).send("Invalid userId");
         }
 
 
-        let sellPoperty = await getSellPropertyDetail(userId, page, limit) as any
+        let sellPoperty = await getAllSellPropertyList(userId, page, limit,searchkey) as any
         if (!sellPoperty) {
             return res.status(400).send(false);
         }
@@ -79,6 +82,7 @@ export const updateSellProperty = async (req: Request, res: Response, next: Func
             taluka: data.taluka,
             locationURL: data.locationURL,
             uploadFilePath: data.uploadFilePath,
+            uploadImagePath: data.uploadImagePath,
             amount: data.amount,
             descriptions: data.descriptions,
             userId: data.userId
@@ -96,7 +100,7 @@ export const updateSellProperty = async (req: Request, res: Response, next: Func
         }
 
 
-        let sellPoperty = await updateSellPropertyDetail(data.sellPropertyId, sellPropertyObj) as any
+        let sellPoperty = await updateSellPropertyDetail(data._id, sellPropertyObj) as any
         if (!sellPoperty) {
             return res.status(400).send(false);
         }
@@ -115,10 +119,7 @@ export const deleteSellProperty = async (req: Request, res: Response, next: Func
         let sellPropertyId = req.query.sellPropertyId as string
         if (!sellPropertyId) {
             return res.status(400).send("sellProperty id is required");
-        }
-
-        // Validate ObjectId
-      
+        }      
 
         if (!isValidObjectId(sellPropertyId)) {
             return res.status(400).send("Invalid userId");
@@ -158,5 +159,29 @@ export const uploadSellPropertyDocument = async (req: Request, res: Response, ne
     } catch (err) {
         console.log(err);
         return res.status(500).send("Something went wrong!");
+    }
+};
+
+
+
+
+export const getSellProperty = async (req: Request, res: Response, next: Function) => {
+    try {
+
+        const sellPropertyId: string = req.query?.sellPropertyId as string;
+        if (!isValidObjectId(sellPropertyId)) {
+            return res.status(400).send("Invalid propertyId");
+        }
+
+
+        let sellPoperty = await getSellPropertyDetail(sellPropertyId) as any
+        if (!sellPoperty) {
+            return res.status(400).send(false);
+        }
+        return res.status(200).send(sellPoperty);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong!");
     }
 };

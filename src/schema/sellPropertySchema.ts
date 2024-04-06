@@ -8,6 +8,7 @@ interface ISellProperty extends Document {
     // state: string;
     locationURL?: string;
     uploadFilePath: string[];
+    uploadImagePath: string[]
     amount: number;
     descriptions: string;
     isDeleted: boolean;
@@ -23,6 +24,7 @@ const sellPropertySchema: Schema<ISellProperty> = new Schema({
     // state: { type: String, default: null },
     locationURL: { type: String },
     uploadFilePath: [{ type: String }],
+    uploadImagePath:[{ type: String }],
     amount: { type: Number, default: null },
     descriptions: { type: String, default: null },
     isDeleted : { type: Boolean, default: false },

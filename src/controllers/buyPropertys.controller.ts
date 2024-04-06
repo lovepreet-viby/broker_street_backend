@@ -13,7 +13,7 @@ export const createBuyProperty = async (req: Request, res: Response, next: Funct
             propertyType: data.propertyType,
             district: data.district,
             taluka: data.taluka,
-            audio: data.audio,
+            // audio: data.audio,
             descriptions: data.descriptions,
             userId: data.userId
         }

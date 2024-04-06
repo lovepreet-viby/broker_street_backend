@@ -68,24 +68,67 @@ export const userPropertyDetail= async ( userId:string,page:number,limit:number)
   
   let result = await User.aggregate([
     {
-      $match: { _id: new ObjectId(userId) }
+      $match: { _id: new ObjectId(userId)}
     },
     {
       $lookup: {
-        from: 'sellproperty',
-        localField: '_id', 
-        foreignField: 'userId', 
-        as: 'sellproperty_detail' 
+        from: "sellproperty", // Replace with the actual collection name for "Friends"
+        let: {
+          userId: new ObjectId(userId) // Variable for another user's ID
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$userId", "$$userId"] },
+                  { $eq: ["$isDeleted", false] }
+                ]
+              }
+            }
+          }
+        ],
+        as: 'sellproperty_detail'
       }
     },
+
     {
       $lookup: {
-        from: 'buyproperty',
-        localField: '_id', 
-        foreignField: 'userId', 
-        as: 'buyproperty_detail' 
+        from: "buyproperty", // Replace with the actual collection name for "Friends"
+        let: {
+          userId: new ObjectId(userId) // Variable for another user's ID
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$userId", "$$userId"] },
+                  { $eq: ["$isDeleted", false] }
+                ]
+              }
+            }
+          }
+        ],
+        as: 'buyproperty_detail'
       }
-    }
+    },
+    // {
+    //   $lookup: {
+    //     from: 'sellproperty',
+    //     localField: '_id', 
+    //     foreignField: 'userId', 
+    //     as: 'sellproperty_detail' 
+    //   }
+    // },
+    // {
+    //   $lookup: {
+    //     from: 'buyproperty',
+    //     localField: '_id', 
+    //     foreignField: 'userId', 
+    //     as: 'buyproperty_detail' 
+    //   }
+    // }
   ]);
 
   if (!result) {

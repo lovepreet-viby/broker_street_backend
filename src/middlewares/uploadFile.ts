@@ -35,6 +35,7 @@ const multerFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFi
   const extname = path.extname(file.originalname).toLowerCase();
 
   if (file.fieldname == 'user') {
+
     const validImageTypes = /jpg|png|jpeg|svg/;
     if (validImageTypes.test(extname)) {
       cb(null, true);
@@ -44,7 +45,9 @@ const multerFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFi
       cb(error(errorMessage) as any, false);
       (req as any).errorMessage = errorMessage;
     }
+
   } else if (file.fieldname == 'selldocument') {
+
     const validDocumentTypes = /pdf|docx/;
     const validImageTypes = /jpg|png|jpeg|svg/;
 
@@ -55,6 +58,7 @@ const multerFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFi
       cb(error(errorMessage) as any, false);
       (req as any).errorMessage = errorMessage;
     }
+
   } else if (file.fieldname === 'buydocument') { // Using 'buyDocument' condition for audio files
     const validAudioTypes = /mp3|wav|ogg/; // Define valid audio types
 

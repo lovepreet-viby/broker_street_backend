@@ -8,8 +8,6 @@ const router = express.Router();
 
 router.post('/upload', upload.array("buydocument"),uploadBuyPropertyDocument)
 router.post('/create', createBuyProperty);
-
-
 router.put('/update', updateBuyProperty);
 router.delete('/delete', deleteBuyProperty);
 

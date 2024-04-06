@@ -21,6 +21,11 @@ export const userProfilePhoto = async (
 ) => {
   try {
 
+    let userId: string = req.query.userId as string
+    if (!userId) {
+      return res.status(400).send("UserId is required");
+    }
+
     if ((req as any).errorMessage) {
       return res.status(400).send((req as any).errorMessage);
     }
@@ -30,6 +35,14 @@ export const userProfilePhoto = async (
     }
 
     let filePath = process.env.BASE_URL + req.file.path
+
+   
+
+    let user = await updateUserById(userId, {profilePicture : filePath });
+    if (!user) {
+      return res.status(400).send(false);
+    }
+
     return res.status(200).send({ Message: "File upload successfully", data: filePath });
 
   } catch (err) {
@@ -65,7 +78,7 @@ export const userSignUp = async (req: Request, res: Response, next: Function) =>
       return res.status(400).send("This number already exits");
     }
 
-    let user = await createUser(userData) as { _id: string, phoneNumber: number, role: string }
+    let user = await createUser(userData) as { _id: string, phoneNumber: number, role: string, lastName : string, firstName : string }
 
     let otpData = await createNewOtp(userData.phoneNumber);
 
@@ -80,7 +93,7 @@ export const userSignUp = async (req: Request, res: Response, next: Function) =>
       return res.status(400).send(false);
     }
     console.log(otpData.otp)
-    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: user.phoneNumber, userId: user._id });
+    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: user.phoneNumber, userId: user._id,  userName : user.firstName+" "+user.lastName });
 
   } catch (err) {
     console.log(err);
@@ -158,7 +171,7 @@ export const userLogin = async (req: Request, res: Response, next: Function) => 
       return res.status(400).send("Invalid phone number");
     }
 
-    let isCheckPhoneNumber = await checkByPhoneNumber(phoneNumber) as { _id: string, phoneNumber: number, role: string }
+    let isCheckPhoneNumber = await checkByPhoneNumber(phoneNumber) as { _id: string, phoneNumber: number, role: string, lastName : string, firstName : string }
     if (!isCheckPhoneNumber) {
       return res.status(400).send("There was no account on this phone number");
     }
@@ -177,7 +190,7 @@ export const userLogin = async (req: Request, res: Response, next: Function) => 
       return res.status(400).send(false);
     }
     console.log(otpData.otp)
-    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: isCheckPhoneNumber.phoneNumber, userId: isCheckPhoneNumber._id });
+    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: isCheckPhoneNumber.phoneNumber, userId: isCheckPhoneNumber._id, userName : isCheckPhoneNumber.firstName+" "+isCheckPhoneNumber.lastName });
   } catch (err) {
     console.log(err);
     res.status(500).send("Something went wrong!");

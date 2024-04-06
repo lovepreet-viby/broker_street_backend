@@ -5,6 +5,7 @@ export interface ISellProperty {
     // state: string;
     locationURL?: string;
     uploadFilePath: string[];
+    uploadImagePath: string[];
     amount: number;
     descriptions: string;
     userId:string;

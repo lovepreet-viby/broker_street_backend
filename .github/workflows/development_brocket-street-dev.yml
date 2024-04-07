@@ -42,8 +42,6 @@ jobs:
     environment:
       name: 'Development'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -55,18 +53,12 @@ jobs:
         run: |
           npm install
       
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BCBB8584F89E4A51B2001D35757BD532 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CD2463C98BA14A22810BBD1B3138D037 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F7B91AC9637145638AB9EE569C3552AB }}
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'brocket-street-dev'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F7B91AC9637145638AB9EE569C3552AB }}
           package: .
           

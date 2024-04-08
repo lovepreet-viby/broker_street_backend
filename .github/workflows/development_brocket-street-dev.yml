@@ -53,7 +53,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'viby-prod-api'
+          app-name: 'brocket-street-dev'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F7B91AC9637145638AB9EE569C3552AB }}
           package: .

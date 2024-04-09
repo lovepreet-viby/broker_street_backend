@@ -92,7 +92,7 @@ export const deleteBuyProperty = async (req: Request, res: Response, next: Funct
       
 
         if (!isValidObjectId(buyPropertyId)) {
-            return res.status(400).send("Invalid userId");
+            return res.status(400).send("Invalid buyPropertyId");
           }
 
 
@@ -100,7 +100,7 @@ export const deleteBuyProperty = async (req: Request, res: Response, next: Funct
         if (!buyPoperty) {
             return res.status(400).send(false);
         }
-        return res.status(200).send(buyPoperty);
+        return res.status(200).send(true);
 
     } catch (err) {
         console.log(err);

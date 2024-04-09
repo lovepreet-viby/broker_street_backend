@@ -5,6 +5,7 @@ import auth from "./middlewares/auth";
 import usersRoutes from "./routes/users.routes";
 import sellPropertyRoutes from "./routes/sellPropertys.routes";
 import buyPropertyRoutes from "./routes/buyPropertys.routes";
+import assignPropertyRoutes from "./routes/assignPropertys.routes"
 
 
 import cors from "cors"; 
@@ -31,8 +32,8 @@ app.get("/", (req: Request, res: Response) =>
 
 app.use("/users", usersRoutes);
 app.use("/sellproperty", sellPropertyRoutes);
-
 app.use("/buyproperty", buyPropertyRoutes);
+app.use('/assign',assignPropertyRoutes)
 
 
 

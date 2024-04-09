@@ -122,7 +122,7 @@ export const deleteSellProperty = async (req: Request, res: Response, next: Func
         }      
 
         if (!isValidObjectId(sellPropertyId)) {
-            return res.status(400).send("Invalid userId");
+            return res.status(400).send("Invalid sellPropertyId");
           }
 
 
@@ -130,7 +130,7 @@ export const deleteSellProperty = async (req: Request, res: Response, next: Func
         if (!buyPoperty) {
             return res.status(400).send(false);
         }
-        return res.status(200).send(buyPoperty);
+        return res.status(200).send(true);
 
     } catch (err) {
         console.log(err);
@@ -178,7 +178,7 @@ export const getSellProperty = async (req: Request, res: Response, next: Functio
         if (!sellPoperty) {
             return res.status(400).send(false);
         }
-        return res.status(200).send(sellPoperty);
+        return res.status(200).send(sellPoperty[0]?sellPoperty[0]:{});
 
     } catch (err) {
         console.log(err);

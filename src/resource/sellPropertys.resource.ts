@@ -91,7 +91,25 @@ export const getSellPropertyDetail = async (propertyId: string) => {
     throw new Error("propertyId is empty");
   }
 
-  let result = await SellProperty.findOne({ _id: new ObjectId(propertyId) })
+  // let result = await SellProperty.findOne({ _id: new ObjectId(propertyId) })
+  let result = await SellProperty.aggregate([
+    {
+      $match: {
+        _id: new ObjectId(propertyId)
+      }
+    },
+    {
+      $lookup: {
+        from: "users", 
+        localField: "userId", 
+        foreignField: "_id", 
+        as: "user_detail" 
+      }
+    },
+    {
+      $unwind: "$user_detail" 
+    }
+  ])
 
   if (!result) {
     return false;

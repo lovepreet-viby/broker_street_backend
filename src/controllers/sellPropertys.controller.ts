@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { ISellProperty } from "../interfaces/sellProperty.interface";
-import { createSellPropertyDetail, getAllSellPropertyList,getSellPropertyDetail,updateSellPropertyDetail,deleteSellPropertyDetail } from "../resource/sellPropertys.resource";
+import { createSellPropertyDetail, getAllSellPropertyList,
+    getSellPropertyDetail,updateSellPropertyDetail,deleteSellPropertyDetail,
+ } from "../resource/sellPropertys.resource";
 import { isValidObjectId } from "mongoose";
 
 export const createSellProperty = async (req: Request, res: Response, next: Function) => {
@@ -47,18 +49,12 @@ export const createSellProperty = async (req: Request, res: Response, next: Func
 export const getAllSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
-        const userId: string = req.query?.userId as string;
-        const page: number = parseInt(req.query?.page as string) || 1; // Default to page 1 if not specified
-        const limit: number = parseInt(req.query?.limit as string) || 10; // Default page size to 10 if not specified
+        // const userId: string = req.query?.userId as string;
+        const page: number = parseInt(req.query?.page as string) || 1;
+        const limit: number = parseInt(req.query?.limit as string) || 10; 
         const searchkey: string = req.query?.searchkey as string
 
-
-        if (!isValidObjectId(userId)) {
-            return res.status(400).send("Invalid userId");
-        }
-
-
-        let sellPoperty = await getAllSellPropertyList(userId, page, limit,searchkey) as any
+        let sellPoperty = await getAllSellPropertyList(page, limit, searchkey) as any
         if (!sellPoperty) {
             return res.status(400).send(false);
         }
@@ -163,8 +159,6 @@ export const uploadSellPropertyDocument = async (req: Request, res: Response, ne
 };
 
 
-
-
 export const getSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -185,3 +179,4 @@ export const getSellProperty = async (req: Request, res: Response, next: Functio
         res.status(500).send("Something went wrong!");
     }
 };
+

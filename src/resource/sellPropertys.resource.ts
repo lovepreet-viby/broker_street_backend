@@ -15,19 +15,20 @@ export const createSellPropertyDetail = async (data: ISellProperty) => {
   return result;
 };
 
-export const getAllSellPropertyList = async (userId: string, page: number, limit: number, searchkey: string) => {
+export const getAllSellPropertyList = async ( page: number, limit: number, searchkey: string) => {
 
-  if (!userId) {
-    throw new Error("userId is empty");
-  }
+  // if (!userId) {
+  //   throw new Error("userId is empty");
+  // }
 
   let searchData = searchkey ? {  // Check if searchkey key is provided
-    userId: { $ne: new ObjectId(userId) },
+    // userId: { $ne: new ObjectId(userId) },
     $or: [
       { "propertyTitle": { $regex: searchkey, $options: "i" } },
       { "description": { $regex: searchkey, $options: "i" } }
     ]
-  } : { userId: { $ne: new ObjectId(userId) },isDeleted: true};
+  } : 
+  { isDeleted: false};
 
   const totalCount = await SellProperty.count(searchData);
   const totalPages = Math.ceil(totalCount / limit);
@@ -38,6 +39,7 @@ export const getAllSellPropertyList = async (userId: string, page: number, limit
   } else {
     skip = 0;
   } 
+
   
   let result = await SellProperty.find(searchData).skip(skip).limit(limit)
 
@@ -91,7 +93,6 @@ export const getSellPropertyDetail = async (propertyId: string) => {
     throw new Error("propertyId is empty");
   }
 
-  // let result = await SellProperty.findOne({ _id: new ObjectId(propertyId) })
   let result = await SellProperty.aggregate([
     {
       $match: {
@@ -116,5 +117,7 @@ export const getSellPropertyDetail = async (propertyId: string) => {
   }
   return result;
 };
+
+
 
 

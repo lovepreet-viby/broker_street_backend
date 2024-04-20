@@ -7,8 +7,8 @@ const uri = process.env.MONGO_CONNECTION_STRING;
 
 export async function run() {
     try {
-        await mongoose.connect("mongodb+srv://lreignsaish:2eQ2ZHftuYnFOVpo@brocket-street.z2e148n.mongodb.net/dev?retryWrites=true");
-            // await mongoose.connect("mongodb://127.0.0.1:27017/brokerstreet");
+        // await mongoose.connect("mongodb+srv://lreignsaish:2eQ2ZHftuYnFOVpo@brocket-street.z2e148n.mongodb.net/dev?retryWrites=true");
+            await mongoose.connect("mongodb://127.0.0.1:27017/brokerstreet");
 
         console.log("mongodb connected!");
     } catch (err) {

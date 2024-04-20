@@ -43,3 +43,84 @@ export const deleteBuyPropertyDetail= async ( buyPropertyId :string) => {
   return result;
 };
   
+
+
+export const getBuyAllPropertyDetail= async (page: number , limit: number) => {
+ 
+  let searchData = { isDeleted: false};
+
+  const totalCount = await BuyProperty.count(searchData);
+  const totalPages = Math.ceil(totalCount / limit);
+
+    let skip: number;
+  if (page !== 1) {
+    skip = (page - 1) * limit;
+  } else {
+    skip = 0;
+  } 
+
+  let result1 = await BuyProperty.aggregate([
+    {
+      $match: searchData // Optional match condition
+    },
+    {
+      $lookup: {
+        from: 'users', 
+        localField: 'userId', 
+        foreignField: '_id', 
+        as: 'userDetails'
+      }
+    },
+    {
+      $unwind: "$userDetails"
+    },
+    ]).skip(skip).limit(limit)
+
+  let result = await BuyProperty.find(searchData).skip(skip).limit(limit)
+   if (!result) {
+      return false;
+    }
+
+    return {
+    totalCount: totalCount,
+    totalPages: totalPages,
+    currenPage: page,
+    buyProperty: result1,
+    };
+};
+
+export const getBuyPropertyDetail = async (propertyId: string) => {
+
+
+  if (!propertyId) {
+    throw new Error("propertyId is empty");
+  }
+
+  let result = await BuyProperty.aggregate([
+    {
+      $match: {
+        _id: new ObjectId(propertyId)
+      }
+    },
+    {
+      $lookup: {
+        from: "users", 
+        localField: "userId", 
+        foreignField: "_id", 
+        as: "user_detail" 
+      }
+    },
+    {
+      $unwind: "$user_detail" 
+    }
+  ])
+
+  if (!result) {
+    return false;
+  }
+  return result;
+};
+
+
+
+

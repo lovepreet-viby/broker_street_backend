@@ -3,7 +3,7 @@ import { IAssignProperty } from "../interfaces/assignProperty.interface";
 import AssignProperty from "../schema/assignProperty";
 
 
-export const createAssignPropertyDetail = async (data: IAssignProperty) => {
+export const createAssignPropertyDetail = async (data: IAssignProperty[]) => {
 
   if (!data) {
     throw new Error("Data is empty");
@@ -31,7 +31,6 @@ export const updateAssignPropertyDetail = async (data: IAssignProperty) => {
 };
 
 
-
 export const deleteAssignPropertyDetail = async (assignId: string) => {
 
   if (!assignId) {
@@ -47,19 +46,45 @@ export const deleteAssignPropertyDetail = async (assignId: string) => {
 
 
 
-
-export const getUserAssignPropertyDetail = async (userId: string, page: number, limit: number) => {
+export const getUserAssignPropertyDetail = async (userId: string, page: number, limit: number, searchkey: string) => {
 
   if (!userId) {
     throw new Error("userId is empty");
   }
 
+  let query =
+    searchkey ? {
+      userId: new ObjectId(userId),
+      isDeleted: false,
+      $or: [
+        { "sellproperty_detail.taluka": { $regex: searchkey, $options: "i" } },
+        { "sellproperty_detail.district": { $regex: searchkey, $options: "i" } }
+      ]
+    } :
+      { userId: new ObjectId(userId), isDeleted: false }
 
-  let query  = { userId: userId ,isDeleted: false }
+
+  let pipeline = [{
+    $lookup: {
+      from: 'sellproperty',
+      localField: 'propertyId',
+      foreignField: '_id',
+      as: 'sellproperty_detail'
+    }
+  },
+  {
+    $unwind: {
+      path: "$sellproperty_detail",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  {
+    $match: query
+  }]
 
 
-  const totalCount = await AssignProperty.count(query);
-  const totalPages = Math.ceil(totalCount / limit);
+  const totalCount = await AssignProperty.aggregate(pipeline);
+  const totalPages = Math.ceil(totalCount.length / limit);
 
   let skip: number;
   if (page !== 1) {
@@ -68,12 +93,13 @@ export const getUserAssignPropertyDetail = async (userId: string, page: number, 
     skip = 0;
   }
 
-  let result = await AssignProperty.find(query).skip(skip).limit(limit);
+
+  let result = await AssignProperty.aggregate(pipeline).skip(skip).limit(limit);
   if (!result) {
     return false;
   }
   return {
-    totalCount: totalCount,
+    totalCount: totalCount.length,
     totalPages: totalPages,
     currenPage: page,
     assignProperty: result,

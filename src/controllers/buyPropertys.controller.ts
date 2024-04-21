@@ -159,7 +159,6 @@ export const getBuyProperty = async (req: Request, res: Response, next: Function
     try {
 
         const buyPropertyId: string = req.query?.buyPropertyId as string;
-        console.log(buyPropertyId)
 
         if (!isValidObjectId(buyPropertyId)) {
             return res.status(400).send("Invalid propertyId");

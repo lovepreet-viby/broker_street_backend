@@ -10,6 +10,12 @@ export interface IUserOtp {
   phoneNumber: number;
   otp : number;
   hash :string;
+
+  firstName: string;
+  lastName: string;
+  email:string;
+  location:string;
+  newuser : boolean
 }
 
 export interface IUserProfileUpdate {

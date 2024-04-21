@@ -21,11 +21,12 @@ export const getAllSellPropertyList = async ( page: number, limit: number, searc
   //   throw new Error("userId is empty");
   // }
 
-  let searchData = searchkey ? {  // Check if searchkey key is provided
+  let searchData = searchkey ? {  
     // userId: { $ne: new ObjectId(userId) },
+    isDeleted: false,
     $or: [
-      { "propertyTitle": { $regex: searchkey, $options: "i" } },
-      { "description": { $regex: searchkey, $options: "i" } }
+      { "taluka": { $regex: searchkey, $options: "i" } },
+      { "district": { $regex: searchkey, $options: "i" } }
     ]
   } : 
   { isDeleted: false};

@@ -23,7 +23,7 @@ export default async function auth(
           if (err) {
             res.status(401).send("Unauthorized");
           } else if (decoded) {
-            req.body.email = decoded.email;
+            req.body = decoded;
             next();
           }
         }

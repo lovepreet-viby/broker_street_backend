@@ -30,8 +30,8 @@ app.get("/", (req: Request, res: Response) =>
   res.status(200).send("Welcome to Viby Info Media Pvt. Limited")
 );
 
-app.use("/users", usersRoutes);
-app.use("/sellproperty",auth, sellPropertyRoutes);
+app.use("/users",usersRoutes);
+app.use("/sellproperty", auth,sellPropertyRoutes);
 app.use("/buyproperty",auth,buyPropertyRoutes);
 app.use('/assign',auth,assignPropertyRoutes)
 

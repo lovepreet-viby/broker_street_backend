@@ -15,7 +15,7 @@ export const createSellPropertyDetail = async (data: ISellProperty) => {
   return result;
 };
 
-export const getAllSellPropertyList = async ( page: number, limit: number, searchkey: string) => {
+export const getAllSellPropertyList = async ( page: number, limit: number, searchkey: string, userId: string) => {
 
   // if (!userId) {
   //   throw new Error("userId is empty");
@@ -29,8 +29,17 @@ export const getAllSellPropertyList = async ( page: number, limit: number, searc
       { "district": { $regex: searchkey, $options: "i" } }
     ]
   } : 
-  { isDeleted: false};
+  userId ? 
+  { 
+    isDeleted: false,
+    userId: { $ne: new ObjectId(userId) }
+  } : 
+  { 
+    isDeleted: false 
+  };
 
+  console.log(searchData,"search data")
+  
   const totalCount = await SellProperty.count(searchData);
   const totalPages = Math.ceil(totalCount / limit);
 
@@ -42,7 +51,7 @@ export const getAllSellPropertyList = async ( page: number, limit: number, searc
   } 
 
   
-  let result = await SellProperty.find(searchData).skip(skip).limit(limit)
+  let result = await SellProperty.find(searchData).skip(skip).limit(limit).sort({ _id : 1})
 
   if (!result) {
     return false;
@@ -119,6 +128,20 @@ export const getSellPropertyDetail = async (propertyId: string) => {
   return result;
 };
 
+
+export const checkSellPropertyId = async (sellPropertyId: string) => {
+
+  if (!sellPropertyId) {
+    throw new Error("id is empty");
+  }
+
+  let result = await SellProperty.findOne({ _id : sellPropertyId });
+  if (!result) {
+    return false;
+  }
+  return result;
+};
+ 
 
 
 

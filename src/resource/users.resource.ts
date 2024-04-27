@@ -2,6 +2,8 @@ import crypto from "crypto";
 import { IUser, IUserProfileUpdate } from "../interfaces/users.interfaces";
 import User from "../schema/userSchema";
 const { ObjectId } = require("mongodb"); // If you're using CommonJS
+import SellProperty from "../schema/sellPropertySchema";
+
 
 export const createUser = async (data: IUser) => {
     if (!data) {
@@ -60,75 +62,95 @@ export const userPropertyDetail = async (
         throw new Error("userid is empty");
     }
 
-    let result = await User.aggregate([
-        {
-            $match: { _id: new ObjectId(userId) },
-        },
-        {
-            $lookup: {
-                from: "sellproperty", // Replace with the actual collection name for "Friends"
-                let: {
-                    userId: new ObjectId(userId), // Variable for another user's ID
-                },
-                pipeline: [
-                    {
-                        $match: {
-                            $expr: {
-                                $and: [
-                                    { $eq: ["$userId", "$$userId"] },
-                                    { $eq: ["$isDeleted", false] },
-                                ],
-                            },
-                        },
-                    },
-                ],
-                as: "sellproperty_detail",
-            },
-        },
+    let searchData = { userId: new ObjectId(userId) , isDeleted: false}
 
-        {
-            $lookup: {
-                from: "buyproperty", // Replace with the actual collection name for "Friends"
-                let: {
-                    userId: new ObjectId(userId), // Variable for another user's ID
-                },
-                pipeline: [
-                    {
-                        $match: {
-                            $expr: {
-                                $and: [
-                                    { $eq: ["$userId", "$$userId"] },
-                                    { $eq: ["$isDeleted", false] },
-                                ],
-                            },
-                        },
-                    },
-                ],
-                as: "buyproperty_detail",
-            },
-        },
-        // {
-        //   $lookup: {
-        //     from: 'sellproperty',
-        //     localField: '_id',
-        //     foreignField: 'userId',
-        //     as: 'sellproperty_detail'
-        //   }
-        // },
-        // {
-        //   $lookup: {
-        //     from: 'buyproperty',
-        //     localField: '_id',
-        //     foreignField: 'userId',
-        //     as: 'buyproperty_detail'
-        //   }
-        // }
-    ]);
+    // let pipeline = [
+    //     {
+    //         $match: searchData,
+    //     },
+    //     {
+    //         $lookup: {
+    //             from: "sellproperty", // Replace with the actual collection name for "Friends"
+    //             let: {
+    //                 userId: new ObjectId(userId), // Variable for another user's ID
+    //             },
+    //             pipeline: [
+    //                 {
+    //                     $match: {
+    //                         $expr: {
+    //                             $and: [
+    //                                 { $eq: ["$userId", "$$userId"] },
+    //                                 { $eq: ["$isDeleted", false] },
+    //                             ],
+    //                         },
+    //                     },
+    //                 },
+    //             ],
+    //             as: "sellproperty_detail",
+    //         },
+    //     },
+
+    //     // {
+    //     //     $lookup: {
+    //     //         from: "buyproperty", // Replace with the actual collection name for "Friends"
+    //     //         let: {
+    //     //             userId: new ObjectId(userId), // Variable for another user's ID
+    //     //         },
+    //     //         pipeline: [
+    //     //             {
+    //     //                 $match: {
+    //     //                     $expr: {
+    //     //                         $and: [
+    //     //                             { $eq: ["$userId", "$$userId"] },
+    //     //                             { $eq: ["$isDeleted", false] },
+    //     //                         ],
+    //     //                     },
+    //     //                 },
+    //     //             },
+    //     //         ],
+    //     //         as: "buyproperty_detail",
+    //     //     },
+    //     // },
+    //     // {
+    //     //   $lookup: {
+    //     //     from: 'sellproperty',
+    //     //     localField: '_id',
+    //     //     foreignField: 'userId',
+    //     //     as: 'sellproperty_detail'
+    //     //   }
+    //     // },
+    //     // {
+    //     //   $lookup: {
+    //     //     from: 'buyproperty',
+    //     //     localField: '_id',
+    //     //     foreignField: 'userId',
+    //     //     as: 'buyproperty_detail'
+    //     //   }
+    //     // }
+    // ]
+
+    const totalCount = await SellProperty.count(searchData);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    let skip: number;
+    if (page !== 1) {
+        skip = (page - 1) * limit;
+    } else {
+        skip = 0;
+    }
+
+    let result = await SellProperty.find(searchData).skip(skip).limit(limit).sort({ _id : 1});
 
     if (!result) {
         return false;
     }
-    return result;
+
+    return {
+        totalCount: totalCount,
+        totalPages: totalPages,
+        currenPage: page,
+        sellProperty: result,
+    };
 };
 
 export const createNewOtp = async (phoneNumber: number) => {

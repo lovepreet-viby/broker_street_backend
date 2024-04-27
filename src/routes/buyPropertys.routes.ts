@@ -1,7 +1,8 @@
 import express from "express";
 import auth from "../middlewares/auth";
 import upload from "../middlewares/uploadFile";
-import { createBuyProperty,uploadBuyPropertyDocument,updateBuyProperty,deleteBuyProperty } from "../controllers/buyPropertys.controller";
+import { createBuyProperty,uploadBuyPropertyDocument,updateBuyProperty,deleteBuyProperty,getBuyProperty,
+    getBuyAllProperty } from "../controllers/buyPropertys.controller";
 
 
 const router = express.Router();
@@ -10,6 +11,10 @@ router.post('/upload', upload.array("buydocument"),uploadBuyPropertyDocument)
 router.post('/create', createBuyProperty);
 router.put('/update', updateBuyProperty);
 router.delete('/delete', deleteBuyProperty);
+
+
+router.get('/all/buyproperty',getBuyAllProperty)
+router.get('/detail',getBuyProperty)
 
 
 export default router;

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
-import { createBuyPropertyDetail, updateBuyPropertyDetail, deleteBuyPropertyDetail } from "../resource/buyPropertys.resource";
+import { createBuyPropertyDetail, updateBuyPropertyDetail, 
+    deleteBuyPropertyDetail,getBuyAllPropertyDetail, getBuyPropertyDetail 
+} from "../resource/buyPropertys.resource";
 import { IBuyProperty } from "../interfaces/buyProperty.interface";
 import { isValidObjectId } from "mongoose";
 
@@ -133,4 +135,45 @@ export const uploadBuyPropertyDocument = async (
         return res.status(500).send("Something went wrong!");
     }
 };
+
+
+export const getBuyAllProperty = async (req: Request, res: Response, next: Function) => {
+    try {
+
+        const page: number = parseInt(req.query?.page as string) || 1;
+        const limit: number = parseInt(req.query?.limit as string) || 10; 
+
+        let buyPoperty = await getBuyAllPropertyDetail(page , limit) as any
+        if (!buyPoperty) {
+            return res.status(400).send(false);
+        }
+        return res.status(200).send(buyPoperty);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong!");
+    }
+};
+
+export const getBuyProperty = async (req: Request, res: Response, next: Function) => {
+    try {
+
+        const buyPropertyId: string = req.query?.buyPropertyId as string;
+
+        if (!isValidObjectId(buyPropertyId)) {
+            return res.status(400).send("Invalid propertyId");
+        }
+
+        let buyPoperty = await getBuyPropertyDetail(buyPropertyId) as any
+        if (!buyPoperty) {
+            return res.status(400).send(false);
+        }
+        return res.status(200).send(buyPoperty[0]?buyPoperty[0]:{});
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong!");
+    }
+};
+
 

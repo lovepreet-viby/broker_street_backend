@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { ISellProperty } from "../interfaces/sellProperty.interface";
-import { createSellPropertyDetail, getAllSellPropertyList,getSellPropertyDetail,updateSellPropertyDetail,deleteSellPropertyDetail } from "../resource/sellPropertys.resource";
+import {
+    createSellPropertyDetail, getAllSellPropertyList,
+    getSellPropertyDetail, updateSellPropertyDetail, deleteSellPropertyDetail,
+    checkSellPropertyId,
+} from "../resource/sellPropertys.resource";
 import { isValidObjectId } from "mongoose";
 
 export const createSellProperty = async (req: Request, res: Response, next: Function) => {
@@ -48,17 +52,11 @@ export const getAllSellProperty = async (req: Request, res: Response, next: Func
     try {
 
         const userId: string = req.query?.userId as string;
-        const page: number = parseInt(req.query?.page as string) || 1; // Default to page 1 if not specified
-        const limit: number = parseInt(req.query?.limit as string) || 10; // Default page size to 10 if not specified
+        const page: number = parseInt(req.query?.page as string) || 1;
+        const limit: number = parseInt(req.query?.limit as string) || 10;
         const searchkey: string = req.query?.searchkey as string
 
-
-        if (!isValidObjectId(userId)) {
-            return res.status(400).send("Invalid userId");
-        }
-
-
-        let sellPoperty = await getAllSellPropertyList(userId, page, limit,searchkey) as any
+        let sellPoperty = await getAllSellPropertyList(page, limit, searchkey, userId) as any
         if (!sellPoperty) {
             return res.status(400).send(false);
         }
@@ -112,19 +110,27 @@ export const updateSellProperty = async (req: Request, res: Response, next: Func
     }
 };
 
-
 export const deleteSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
         let sellPropertyId = req.query.sellPropertyId as string
         if (!sellPropertyId) {
             return res.status(400).send("sellProperty id is required");
-        }      
+        }
 
         if (!isValidObjectId(sellPropertyId)) {
             return res.status(400).send("Invalid sellPropertyId");
-          }
+        }
 
+
+        let checkSellProperty = await checkSellPropertyId(sellPropertyId) as any
+        if(!checkSellProperty){
+            return res.status(400).send(false);
+        }
+
+        if (checkSellProperty.userId.toString() != req.body.user_id) {
+            return res.status(400).send("Unauthorized person, so you cannot delete the property.");
+        }
 
         let buyPoperty = await deleteSellPropertyDetail(sellPropertyId) as any
         if (!buyPoperty) {
@@ -141,7 +147,7 @@ export const deleteSellProperty = async (req: Request, res: Response, next: Func
 export const uploadSellPropertyDocument = async (req: Request, res: Response, next: Function) => {
     try {
 
-        if((req as any).errorMessage){
+        if ((req as any).errorMessage) {
             return res.status(400).send((req as any).errorMessage);
         }
 
@@ -163,8 +169,6 @@ export const uploadSellPropertyDocument = async (req: Request, res: Response, ne
 };
 
 
-
-
 export const getSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -178,10 +182,11 @@ export const getSellProperty = async (req: Request, res: Response, next: Functio
         if (!sellPoperty) {
             return res.status(400).send(false);
         }
-        return res.status(200).send(sellPoperty[0]?sellPoperty[0]:{});
+        return res.status(200).send(sellPoperty[0] ? sellPoperty[0] : {});
 
     } catch (err) {
         console.log(err);
         res.status(500).send("Something went wrong!");
     }
 };
+

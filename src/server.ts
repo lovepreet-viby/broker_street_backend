@@ -1,7 +1,7 @@
 import express, { Express, Response, Request } from "express";
 import http from "http";
 import dotenv from "dotenv";
-import auth from "./middlewares/auth";
+import auth, { AdminAuth } from "./middlewares/auth";
 import usersRoutes from "./routes/users.routes";
 import sellPropertyRoutes from "./routes/sellPropertys.routes";
 import buyPropertyRoutes from "./routes/buyPropertys.routes";
@@ -30,10 +30,10 @@ app.get("/", (req: Request, res: Response) =>
   res.status(200).send("Welcome to Viby Info Media Pvt. Limited")
 );
 
-app.use("/users", usersRoutes);
-app.use("/sellproperty", sellPropertyRoutes);
-app.use("/buyproperty", buyPropertyRoutes);
-app.use('/assign',assignPropertyRoutes)
+app.use("/users",usersRoutes);
+app.use("/sellproperty", auth,sellPropertyRoutes);
+app.use("/buyproperty",auth,buyPropertyRoutes);
+app.use('/assign',auth,assignPropertyRoutes)
 
 
 

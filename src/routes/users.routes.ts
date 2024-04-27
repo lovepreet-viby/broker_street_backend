@@ -23,8 +23,8 @@ router.post('/signup', userSignUp);
 router.post('/checkOtp', checkUserOtp);
 router.post('/resendOtp', resendUserOtp);
 router.post("/signin", userLogin);
-router.get("/detail", userDetail);
-router.put("/update", updateUserDetail); 
+router.get("/detail",auth, userDetail);
+router.put("/update",auth, updateUserDetail); 
 
 
 // property api 

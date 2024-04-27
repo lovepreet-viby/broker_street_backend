@@ -36,9 +36,8 @@ export const userProfilePhoto = async (
 
     let filePath = process.env.BASE_URL + req.file.path
 
-   
 
-    let user = await updateUserById(userId, {profilePicture : filePath });
+    let user = await updateUserById(userId, { profilePicture: filePath });
     if (!user) {
       return res.status(400).send(false);
     }
@@ -78,22 +77,25 @@ export const userSignUp = async (req: Request, res: Response, next: Function) =>
       return res.status(400).send("This number already exits");
     }
 
-    let user = await createUser(userData) as { _id: string, phoneNumber: number, role: string, lastName : string, firstName : string }
+    // let user = await createUser(userData) as { _id: string, phoneNumber: number, role: string, lastName : string, firstName : string }
+    // if (!user) {
+    //   return res.status(400).send(false);
+    // }
 
     let otpData = await createNewOtp(userData.phoneNumber);
-
-    const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
-    let token = await jwt.sign({
-      user_id: user._id,
-      phoneNumber: user.phoneNumber,
-      role: user.role
-    }, secretKey, { expiresIn: "24h" });
-
-    if (!user) {
+    if (!otpData) {
       return res.status(400).send(false);
     }
-    console.log(otpData.otp)
-    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: user.phoneNumber, userId: user._id,  userName : user.firstName+" "+user.lastName });
+
+    // const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
+    // let token = await jwt.sign({
+    //   user_id: user._id,
+    //   phoneNumber: user.phoneNumber,
+    //   role: user.role
+    // }, secretKey, { expiresIn: "24h" });
+    //userId: user._id,  userName : user.firstName+" "+user.lastName
+
+    return res.status(200).send({ hash: otpData.hash, phoneNumber: data.phoneNumber });
 
   } catch (err) {
     console.log(err);
@@ -123,7 +125,49 @@ export const checkUserOtp = async (req: Request, res: Response, next: Function) 
       return res.status(400).send(false);
     }
 
-    return res.status(200).send(true);
+    let user
+    if(data.newuser == true){    
+
+
+      let checkPhoneNumber = await checkByPhoneNumber(userData.phoneNumber) as any
+      if (checkPhoneNumber) {
+        return res.status(400).send("Phone number already exits");
+      }
+
+      let userObj: IUser = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        location: data.location
+      }
+
+      user = await createUser(userObj) as any
+      if (!user) {
+        return res.status(400).send(false);
+      }
+      
+    }else{
+
+      user = await checkByPhoneNumber(userData.phoneNumber) as any
+      if (!user) {
+        return res.status(400).send("Invalid Phone number");
+      }
+    }
+
+    const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
+    let token = await jwt.sign({
+      user_id: user._id,
+      phoneNumber: user.phoneNumber,
+      role: user.role
+    }, secretKey, { expiresIn: "24h" });
+
+    return res.status(200).send({ token: token, userId: user._id,  userName : user.firstName+" "+user.lastName,
+    role : user.role,
+    profilePicture : user.profilePicture
+    });
+
+
   } catch (err) {
     console.log(err);
     res.status(500).send("Something went wrong!");
@@ -171,26 +215,26 @@ export const userLogin = async (req: Request, res: Response, next: Function) => 
       return res.status(400).send("Invalid phone number");
     }
 
-    let isCheckPhoneNumber = await checkByPhoneNumber(phoneNumber) as { _id: string, phoneNumber: number, role: string, lastName : string, firstName : string }
+    let isCheckPhoneNumber = await checkByPhoneNumber(phoneNumber) as { _id: string, phoneNumber: number, role: string, lastName: string, firstName: string }
     if (!isCheckPhoneNumber) {
       return res.status(400).send("There was no account on this phone number");
     }
     // To do
     // otp send service  
 
-    const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
-    let token = await jwt.sign({
-      user_id: isCheckPhoneNumber._id,
-      phoneNumber: isCheckPhoneNumber.phoneNumber,
-      role: isCheckPhoneNumber.role
-    }, secretKey, { expiresIn: "24h" });
+    // const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns"
+    // let token = await jwt.sign({
+    //   user_id: isCheckPhoneNumber._id,
+    //   phoneNumber: isCheckPhoneNumber.phoneNumber,
+    //   role: isCheckPhoneNumber.role
+    // }, secretKey, { expiresIn: "24h" });
 
     let otpData = await createNewOtp(phoneNumber);
     if (!otpData) {
       return res.status(400).send(false);
     }
-    console.log(otpData.otp)
-    return res.status(200).send({ hash: otpData.hash, token: token, phoneNumber: isCheckPhoneNumber.phoneNumber, userId: isCheckPhoneNumber._id, userName : isCheckPhoneNumber.firstName+" "+isCheckPhoneNumber.lastName });
+
+    return res.status(200).send({ hash: otpData.hash, phoneNumber: isCheckPhoneNumber.phoneNumber });
   } catch (err) {
     console.log(err);
     res.status(500).send("Something went wrong!");

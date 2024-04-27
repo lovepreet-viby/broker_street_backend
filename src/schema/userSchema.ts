@@ -15,7 +15,7 @@ interface IUser extends Document {
 
 // Define the Mongoose schema for User
 const userSchema = new mongoose.Schema<IUser>({
-  profilePicture: { type: String , default : null},
+  profilePicture: { type: String , default : ""},
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   phoneNumber: { type: Number, required: true },

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { createBuyPropertyDetail, updateBuyPropertyDetail, 
-    deleteBuyPropertyDetail,getBuyAllPropertyDetail, getBuyPropertyDetail 
+import {
+    createBuyPropertyDetail, updateBuyPropertyDetail,
+    deleteBuyPropertyDetail, getBuyAllPropertyDetail, getBuyPropertyDetail
 } from "../resource/buyPropertys.resource";
 import { IBuyProperty } from "../interfaces/buyProperty.interface";
 import { isValidObjectId } from "mongoose";
@@ -90,13 +91,9 @@ export const deleteBuyProperty = async (req: Request, res: Response, next: Funct
             return res.status(400).send("buyproperty id is required");
         }
 
-        // Validate ObjectId
-      
-
         if (!isValidObjectId(buyPropertyId)) {
             return res.status(400).send("Invalid buyPropertyId");
-          }
-
+        }
 
         let buyPoperty = await deleteBuyPropertyDetail(buyPropertyId) as any
         if (!buyPoperty) {
@@ -141,9 +138,9 @@ export const getBuyAllProperty = async (req: Request, res: Response, next: Funct
     try {
 
         const page: number = parseInt(req.query?.page as string) || 1;
-        const limit: number = parseInt(req.query?.limit as string) || 10; 
+        const limit: number = parseInt(req.query?.limit as string) || 10;
 
-        let buyPoperty = await getBuyAllPropertyDetail(page , limit) as any
+        let buyPoperty = await getBuyAllPropertyDetail(page, limit) as any
         if (!buyPoperty) {
             return res.status(400).send(false);
         }
@@ -168,7 +165,7 @@ export const getBuyProperty = async (req: Request, res: Response, next: Function
         if (!buyPoperty) {
             return res.status(400).send(false);
         }
-        return res.status(200).send(buyPoperty[0]?buyPoperty[0]:{});
+        return res.status(200).send(buyPoperty[0] ? buyPoperty[0] : {});
 
     } catch (err) {
         console.log(err);

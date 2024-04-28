@@ -28,7 +28,7 @@ router.put("/update",auth, updateUserDetail);
 
 
 // property api 
-router.get("/property", userProperty)
+router.get("/property",auth, userProperty)
 
 
 

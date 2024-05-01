@@ -1,11 +1,15 @@
 import express from "express";
 import { createAssignProperty,updateAssignProperty,deleteAssignProperty,getUserAssignProperty } from "../controllers/assignPropertys.controller";
+import auth, { AdminAuth } from "../middlewares/auth";
 const router = express.Router();
 
-router.post('/create', createAssignProperty);
-router.put('/update', updateAssignProperty);
-router.delete('/delete', deleteAssignProperty);
-router.get('/user/property', getUserAssignProperty);
+// import auth, { AdminAuth } from "./middlewares/auth";
+
+
+router.post('/create',AdminAuth, createAssignProperty);
+router.put('/update',AdminAuth, updateAssignProperty);
+router.delete('/delete', AdminAuth,deleteAssignProperty);
+router.get('/user/property',auth, getUserAssignProperty);
 
 
 export default router;

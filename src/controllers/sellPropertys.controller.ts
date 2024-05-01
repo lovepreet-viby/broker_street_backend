@@ -128,7 +128,7 @@ export const deleteSellProperty = async (req: Request, res: Response, next: Func
             return res.status(400).send(false);
         }
 
-        if (checkSellProperty.userId.toString() != req.body.user_id) {
+        if (checkSellProperty.userId.toString() != req.body.user.user_id) {
             return res.status(400).send("Unauthorized person, so you cannot delete the property.");
         }
 

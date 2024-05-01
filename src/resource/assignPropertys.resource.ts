@@ -64,23 +64,55 @@ export const getUserAssignPropertyDetail = async (userId: string, page: number, 
       { userId: new ObjectId(userId), isDeleted: false }
 
 
-  let pipeline = [{
-    $lookup: {
-      from: 'sellproperty',
-      localField: 'propertyId',
-      foreignField: '_id',
-      as: 'sellproperty_detail'
+  // let pipeline = [{
+  //   $lookup: {
+  //     from: 'sellproperty',
+  //     localField: 'propertyId',
+  //     foreignField: '_id',
+  //     as: 'sellproperty_detail'
+  //   }
+  // },
+  // {
+  //   $unwind: {
+  //     path: "$sellproperty_detail",
+  //     preserveNullAndEmptyArrays: true
+  //   }
+  // },
+  // {
+  //   $match: query
+  // }]
+
+
+  let pipeline = [
+    {
+      $lookup: {
+        from: 'sellproperty',
+        let: { propertyId: '$propertyId' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$_id', '$$propertyId'] },
+                  { $eq: ["$isDeleted", false] }
+                ]
+              },
+            }
+          },
+        ],
+        as: 'sellproperty_detail'
+      }
+    },
+    {
+      $unwind: {
+        path: "$sellproperty_detail",
+        preserveNullAndEmptyArrays: false
+      }
+    },
+    {
+      $match: query
     }
-  },
-  {
-    $unwind: {
-      path: "$sellproperty_detail",
-      preserveNullAndEmptyArrays: true
-    }
-  },
-  {
-    $match: query
-  }]
+  ];
 
 
   const totalCount = await AssignProperty.aggregate(pipeline);

@@ -23,7 +23,7 @@ export default async function auth(
           if (err) {
             res.status(401).send("Unauthorized");
           } else if (decoded) {
-            req.body = decoded;
+            req.body.user = decoded;
             next();
           }
         }
@@ -53,7 +53,7 @@ export async function AdminAuth(
         }
         
         //decoded.role !== 'admin' 
-        if (decoded.role !== 'superadmin') {
+        if (decoded.role !== 'admin') {
           return res.status(403).json('Access denied. User is not an admin.');
         }
         next();

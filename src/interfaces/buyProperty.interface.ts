@@ -1,7 +1,8 @@
 export interface IBuyProperty {
     propertyType: string;
     district: string;
-    taluka: string;
+    village: string;
+    // taluka: string;
     audio?:string;
     descriptions: string;
     userId:string;

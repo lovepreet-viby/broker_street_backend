@@ -122,5 +122,38 @@ export const getBuyPropertyDetail = async (propertyId: string) => {
 };
 
 
+export const getAllUserBuyPropertyList = async (page: number, limit: number, userId: string) => {
+
+  if (!userId) {
+    throw new Error("userId is empty");
+  }
+
+  let query = {
+    userId: new ObjectId(userId),
+    isDeleted: false,
+  }
+
+  const totalCount = await BuyProperty.count(query);
+  const totalPages = Math.ceil(totalCount / limit);
+
+  let skip: number;
+  if (page !== 1) {
+    skip = (page - 1) * limit;
+  } else {
+    skip = 0;
+  }
 
 
+  let result = await BuyProperty.find(query).skip(skip).limit(limit).sort({ _id: 1 })
+
+  if (!result) {
+    return false;
+  }
+
+  return {
+    totalCount: totalCount,
+    totalPages: totalPages,
+    currenPage: page,
+    buyProperty: result,
+  };
+};

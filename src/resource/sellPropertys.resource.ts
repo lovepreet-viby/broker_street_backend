@@ -15,31 +15,29 @@ export const createSellPropertyDetail = async (data: ISellProperty) => {
   return result;
 };
 
-export const getAllSellPropertyList = async ( page: number, limit: number, searchkey: string, userId: string) => {
+export const getAllSellPropertyList = async (page: number, limit: number, searchkey: string, userId: string) => {
 
   // if (!userId) {
   //   throw new Error("userId is empty");
   // }
 
-  let searchData = searchkey ? {  
+  let searchData = searchkey ? {
     // userId: { $ne: new ObjectId(userId) },
     isDeleted: false,
     $or: [
       { "taluka": { $regex: searchkey, $options: "i" } },
       { "district": { $regex: searchkey, $options: "i" } }
     ]
-  } : 
-  userId ? 
-  { 
-    isDeleted: false,
-    userId: { $ne: new ObjectId(userId) }
-  } : 
-  { 
-    isDeleted: false 
-  };
+  } :
+    userId ?
+      {
+        isDeleted: false,
+        userId: { $ne: new ObjectId(userId) }
+      } :
+      {
+        isDeleted: false
+      };
 
-  console.log(searchData,"search data")
-  
   const totalCount = await SellProperty.count(searchData);
   const totalPages = Math.ceil(totalCount / limit);
 
@@ -48,10 +46,10 @@ export const getAllSellPropertyList = async ( page: number, limit: number, searc
     skip = (page - 1) * limit;
   } else {
     skip = 0;
-  } 
+  }
 
-  
-  let result = await SellProperty.find(searchData).skip(skip).limit(limit).sort({ _id : 1})
+
+  let result = await SellProperty.find(searchData).skip(skip).limit(limit).sort({ _id: 1 })
 
   if (!result) {
     return false;
@@ -111,14 +109,14 @@ export const getSellPropertyDetail = async (propertyId: string) => {
     },
     {
       $lookup: {
-        from: "users", 
-        localField: "userId", 
-        foreignField: "_id", 
-        as: "user_detail" 
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user_detail"
       }
     },
     {
-      $unwind: "$user_detail" 
+      $unwind: "$user_detail"
     }
   ])
 
@@ -135,13 +133,47 @@ export const checkSellPropertyId = async (sellPropertyId: string) => {
     throw new Error("id is empty");
   }
 
-  let result = await SellProperty.findOne({ _id : sellPropertyId });
+  let result = await SellProperty.findOne({ _id: sellPropertyId });
   if (!result) {
     return false;
   }
   return result;
 };
- 
 
 
 
+export const getAllUserSellPropertyList = async (page: number, limit: number, userId: string) => {
+
+  if (!userId) {
+    throw new Error("userId is empty");
+  }
+
+  let query = {
+    userId: new ObjectId(userId),
+    isDeleted: false,
+  }
+
+  const totalCount = await SellProperty.count(query);
+  const totalPages = Math.ceil(totalCount / limit);
+
+  let skip: number;
+  if (page !== 1) {
+    skip = (page - 1) * limit;
+  } else {
+    skip = 0;
+  }
+
+
+  let result = await SellProperty.find(query).skip(skip).limit(limit).sort({ _id: 1 })
+
+  if (!result) {
+    return false;
+  }
+
+  return {
+    totalCount: totalCount,
+    totalPages: totalPages,
+    currenPage: page,
+    sellProperty: result,
+  };
+};

@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import {
     createBuyPropertyDetail, updateBuyPropertyDetail,
-    deleteBuyPropertyDetail, getBuyAllPropertyDetail, getBuyPropertyDetail
+    deleteBuyPropertyDetail, getBuyAllPropertyDetail, getBuyPropertyDetail,
+    getAllUserBuyPropertyList
 } from "../resource/buyPropertys.resource";
 import { IBuyProperty } from "../interfaces/buyProperty.interface";
 import { isValidObjectId } from "mongoose";
@@ -15,17 +16,18 @@ export const createBuyProperty = async (req: Request, res: Response, next: Funct
         let buyPropertyObj: IBuyProperty = {
             propertyType: data.propertyType,
             district: data.district,
-            taluka: data.taluka,
+            village: data.village,
+            // taluka: data.taluka,
             // audio: data.audio,
             descriptions: data.descriptions,
             userId: data.userId
         }
 
-        let checkObject = Object.keys(buyPropertyObj).filter((o) => !(buyPropertyObj as any)[o]);
+      
+        let checkObject = Object.keys(buyPropertyObj).filter((o) => o !== 'district' && !(buyPropertyObj as any)[o]);
         if (checkObject.length > 0) {
             return res.status(400).send(checkObject);
         }
-
         const allowedPropertyTypes = ["residential", "commercial", "land/plot"];
         if (!allowedPropertyTypes.includes(buyPropertyObj.propertyType)) {
             return res.status(400).send({ "Invalid propertyType:": buyPropertyObj.propertyType });
@@ -54,13 +56,16 @@ export const updateBuyProperty = async (req: Request, res: Response, next: Funct
         let buyPropertyObj: IBuyProperty = {
             propertyType: data.propertyType,
             district: data.district,
-            taluka: data.taluka,
-            audio: data.audio,
+            village: data.village,
+
+            // taluka: data.taluka,
+            // audio: data.audio,
             descriptions: data.descriptions,
             userId: data.userId
         }
 
-        let checkObject = Object.keys(buyPropertyObj).filter((o) => !(buyPropertyObj as any)[o]);
+
+        let checkObject = Object.keys(buyPropertyObj).filter((o) => o !== 'district' && !(buyPropertyObj as any)[o]);
         if (checkObject.length > 0) {
             return res.status(400).send(checkObject);
         }
@@ -70,7 +75,7 @@ export const updateBuyProperty = async (req: Request, res: Response, next: Funct
             return res.status(400).send({ "Invalid propertyType:": buyPropertyObj.propertyType });
         }
 
-        let buyPoperty = await updateBuyPropertyDetail(data.buyPropertyId, buyPropertyObj) as any
+        let buyPoperty = await updateBuyPropertyDetail(data._id, buyPropertyObj) as any
         if (!buyPoperty) {
             return res.status(400).send(false);
         }
@@ -166,6 +171,31 @@ export const getBuyProperty = async (req: Request, res: Response, next: Function
             return res.status(400).send(false);
         }
         return res.status(200).send(buyPoperty[0] ? buyPoperty[0] : {});
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong!");
+    }
+};
+
+export const getAllUserBuyProperty = async (req: Request, res: Response, next: Function) => {
+    try {
+
+        const userId: string = req.query?.userId as string;
+        const page: number = parseInt(req.query?.page as string) || 1;
+        const limit: number = parseInt(req.query?.limit as string) || 10;
+        // const searchkey: string = req.query?.searchkey as string
+
+        if (!isValidObjectId(userId)) {
+            return res.status(400).send("Invalid userId");
+        }
+
+
+        let buyPoperty = await getAllUserBuyPropertyList(page, limit, userId) as any
+        if (!buyPoperty) {
+            return res.status(400).send(false);
+        }
+        return res.status(200).send(buyPoperty);
 
     } catch (err) {
         console.log(err);

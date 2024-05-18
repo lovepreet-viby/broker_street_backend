@@ -3,7 +3,7 @@ import { ISellProperty } from "../interfaces/sellProperty.interface";
 import {
     createSellPropertyDetail, getAllSellPropertyList,
     getSellPropertyDetail, updateSellPropertyDetail, deleteSellPropertyDetail,
-    checkSellPropertyId,
+    checkSellPropertyId,getAllUserSellPropertyList
 } from "../resource/sellPropertys.resource";
 import { isValidObjectId } from "mongoose";
 
@@ -15,16 +15,18 @@ export const createSellProperty = async (req: Request, res: Response, next: Func
         let sellPropertyObj: ISellProperty = {
             propertyType: data.propertyType,
             district: data.district,
-            taluka: data.taluka,
+            village: data.village,
+            // taluka: data.taluka,
             locationURL: data.locationURL,
             uploadFilePath: data.uploadFilePath,
             uploadImagePath: data.uploadImagePath,
             amount: data.amount,
+            amountUnit : data.amountUnit,
             descriptions: data.descriptions,
             userId: data.userId
         }
 
-        let checkObject = Object.keys(sellPropertyObj).filter((o) => !(sellPropertyObj as any)[o]);
+        let checkObject = Object.keys(sellPropertyObj).filter((o) => o !== 'locationURL' && !(sellPropertyObj as any)[o]);
         if (checkObject.length > 0) {
             return res.status(400).send(checkObject);
         }
@@ -77,7 +79,9 @@ export const updateSellProperty = async (req: Request, res: Response, next: Func
         let sellPropertyObj: ISellProperty = {
             propertyType: data.propertyType,
             district: data.district,
-            taluka: data.taluka,
+            village: data.village,
+            // taluka: data.taluka,
+            amountUnit : data.amountUnit,
             locationURL: data.locationURL,
             uploadFilePath: data.uploadFilePath,
             uploadImagePath: data.uploadImagePath,
@@ -86,8 +90,7 @@ export const updateSellProperty = async (req: Request, res: Response, next: Func
             userId: data.userId
         }
 
-
-        let checkObject = Object.keys(sellPropertyObj).filter((o) => !(sellPropertyObj as any)[o]);
+        let checkObject = Object.keys(sellPropertyObj).filter((o) => o !== 'locationURL' && !(sellPropertyObj as any)[o]);
         if (checkObject.length > 0) {
             return res.status(400).send(checkObject);
         }
@@ -190,3 +193,29 @@ export const getSellProperty = async (req: Request, res: Response, next: Functio
     }
 };
 
+
+
+export const getAllUserSellProperty = async (req: Request, res: Response, next: Function) => {
+    try {
+
+        const userId: string = req.query?.userId as string;
+        const page: number = parseInt(req.query?.page as string) || 1;
+        const limit: number = parseInt(req.query?.limit as string) || 10;
+        // const searchkey: string = req.query?.searchkey as string
+
+
+        if (!isValidObjectId(userId)) {
+            return res.status(400).send("Invalid userId");
+        }
+
+        let sellPoperty = await getAllUserSellPropertyList(page, limit, userId) as any
+        if (!sellPoperty) {
+            return res.status(400).send(false);
+        }
+        return res.status(200).send(sellPoperty);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong!");
+    }
+};

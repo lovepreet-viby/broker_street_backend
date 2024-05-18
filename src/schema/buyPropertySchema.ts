@@ -4,9 +4,10 @@ import mongoose, { Document, Model, Schema ,ObjectId} from "mongoose";
 interface IBuyProperty extends Document {
     propertyType: string;
     district: string;
-    taluka: string;
-    audio?: string;
+    // taluka: string;
+    // audio?: string;
     descriptions: string;
+    village: string;
     isDeleted: boolean;
     userId:ObjectId;
 }
@@ -15,9 +16,10 @@ interface IBuyProperty extends Document {
 const buyPropertySchema: Schema<IBuyProperty> = new Schema({
     userId: { type: Schema.Types.ObjectId, required: true, ref: 'users' },
     propertyType: { type: String,enum:["residential", "commercial", "land/plot"], default: null },
-    taluka: { type: String, default: null },
     district: { type: String, default: null },
-    audio: { type: String },
+    village: { type: String, default: null },
+    // taluka: { type: String, default: null },
+    // audio: { type: String },
     descriptions: { type: String, default: null },
     isDeleted : { type: Boolean, default: false },
 });

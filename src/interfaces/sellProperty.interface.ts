@@ -1,8 +1,10 @@
 export interface ISellProperty {
     propertyType: string;
     district: string;
-    taluka: string;
+    village: string;
+    // taluka: string;
     // state: string;
+    amountUnit: string;
     locationURL?: string;
     uploadFilePath: string[];
     uploadImagePath: string[];

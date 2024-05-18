@@ -5,7 +5,11 @@ import auth, { AdminAuth } from "./middlewares/auth";
 import usersRoutes from "./routes/users.routes";
 import sellPropertyRoutes from "./routes/sellPropertys.routes";
 import buyPropertyRoutes from "./routes/buyPropertys.routes";
-import assignPropertyRoutes from "./routes/assignPropertys.routes"
+import assignSellPropertyRoutes from "./routes/assignSellPropertys.routes"
+
+import assignBuyPropertyRoutes from "./routes/assignBuyPropertys.routes"
+
+
 
 
 import cors from "cors"; 
@@ -33,7 +37,8 @@ app.get("/", (req: Request, res: Response) =>
 app.use("/users",usersRoutes);
 app.use("/sellproperty",auth,sellPropertyRoutes);
 app.use("/buyproperty",auth,buyPropertyRoutes);
-app.use('/assign',assignPropertyRoutes)
+app.use('/assignSell',assignSellPropertyRoutes) // auth setup in a routing file
+app.use('/assignBuy',assignBuyPropertyRoutes) // auth setup in a routing file
 
 
 

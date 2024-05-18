@@ -1,9 +1,9 @@
 const { ObjectId } = require("mongodb"); // If you're using CommonJS
-import { IAssignProperty } from "../interfaces/assignProperty.interface";
-import AssignProperty from "../schema/assignProperty";
+import { IAssignSellProperty } from "../interfaces/assignSellProperty.interface";
+import AssignProperty from "../schema/assignSellProperty";
 
 
-export const createAssignPropertyDetail = async (data: IAssignProperty[]) => {
+export const createAssignSellPropertyDetail = async (data: IAssignSellProperty[]) => {
 
   if (!data) {
     throw new Error("Data is empty");
@@ -17,7 +17,7 @@ export const createAssignPropertyDetail = async (data: IAssignProperty[]) => {
 };
 
 
-export const updateAssignPropertyDetail = async (data: IAssignProperty) => {
+export const updateAssignSellPropertyDetail = async (data: IAssignSellProperty) => {
 
   if (!data) {
     throw new Error("Data is empty");
@@ -31,7 +31,7 @@ export const updateAssignPropertyDetail = async (data: IAssignProperty) => {
 };
 
 
-export const deleteAssignPropertyDetail = async (assignId: string) => {
+export const deleteAssignSellPropertyDetail = async (assignId: string) => {
 
   if (!assignId) {
     throw new Error("assignId is empty");
@@ -46,7 +46,7 @@ export const deleteAssignPropertyDetail = async (assignId: string) => {
 
 
 
-export const getUserAssignPropertyDetail = async (userId: string, page: number, limit: number, searchkey: string) => {
+export const getUserAssignSellPropertyDetail = async (userId: string, page: number, limit: number, searchkey: string) => {
 
   if (!userId) {
     throw new Error("userId is empty");
@@ -57,7 +57,7 @@ export const getUserAssignPropertyDetail = async (userId: string, page: number, 
       userId: new ObjectId(userId),
       isDeleted: false,
       $or: [
-        { "sellproperty_detail.taluka": { $regex: searchkey, $options: "i" } },
+        { "sellproperty_detail.village": { $regex: searchkey, $options: "i" } },
         { "sellproperty_detail.district": { $regex: searchkey, $options: "i" } }
       ]
     } :

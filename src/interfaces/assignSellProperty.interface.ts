@@ -1,4 +1,4 @@
-export interface IAssignProperty {
+export interface IAssignSellProperty {
     id?:string,
     userId:string;
     propertyId: string;

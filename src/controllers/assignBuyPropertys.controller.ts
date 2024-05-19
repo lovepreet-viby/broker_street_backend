@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { IAssignProperty } from "../interfaces/assignProperty.interface";
+import { IAssignBuyProperty } from "../interfaces/assignBuyProperty.interface";
 import { isValidObjectId } from "mongoose";
-import { createAssignPropertyDetail, updateAssignPropertyDetail, deleteAssignPropertyDetail, getUserAssignPropertyDetail } from "../resource/assignPropertys.resource";
+import { createAssignBuyPropertyDetail, updateAssignBuyPropertyDetail, deleteAssignBuyPropertyDetail, getUserAssignBuyPropertyDetail } from "../resource/assignBuyPropertys.resource";
 
-export const createAssignProperty = async (req: Request, res: Response, next: Function) => {
+export const createAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
         let data = req.body
@@ -25,7 +25,7 @@ export const createAssignProperty = async (req: Request, res: Response, next: Fu
 
 
 
-        let assignPoperty = await createAssignPropertyDetail(data) as any
+        let assignPoperty = await createAssignBuyPropertyDetail(data) as any
         if (!assignPoperty) {
             return res.status(400).send(false);
         }
@@ -37,12 +37,12 @@ export const createAssignProperty = async (req: Request, res: Response, next: Fu
     }
 };
 
-export const updateAssignProperty = async (req: Request, res: Response, next: Function) => {
+export const updateAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
         let data = req.body
 
-        let assignPropertyObj: IAssignProperty = {
+        let assignPropertyObj: IAssignBuyProperty = {
             id: data.id,
             userId: data.userId,
             propertyId: data.propertyId,
@@ -59,7 +59,7 @@ export const updateAssignProperty = async (req: Request, res: Response, next: Fu
             return res.status(400).send({ "Invalid propertyType:": assignPropertyObj.propertyType });
         }
 
-        let assignPoperty = await updateAssignPropertyDetail(assignPropertyObj) as any
+        let assignPoperty = await updateAssignBuyPropertyDetail(assignPropertyObj) as any
         if (!assignPoperty) {
             return res.status(400).send(false);
         }
@@ -71,7 +71,7 @@ export const updateAssignProperty = async (req: Request, res: Response, next: Fu
     }
 };
 
-export const deleteAssignProperty = async (req: Request, res: Response, next: Function) => {
+export const deleteAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
         let assignId = req.query.assignId as string
@@ -84,7 +84,7 @@ export const deleteAssignProperty = async (req: Request, res: Response, next: Fu
         }
 
 
-        let assignPoperty = await deleteAssignPropertyDetail(assignId) as any
+        let assignPoperty = await deleteAssignBuyPropertyDetail(assignId) as any
         if (!assignPoperty) {
             return res.status(400).send(false);
         }
@@ -96,7 +96,7 @@ export const deleteAssignProperty = async (req: Request, res: Response, next: Fu
     }
 };
 
-export const getUserAssignProperty = async (req: Request, res: Response, next: Function) => {
+export const getUserAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
         let userId = req.query.userId as string
@@ -113,7 +113,7 @@ export const getUserAssignProperty = async (req: Request, res: Response, next: F
         }
 
 
-        let buyPoperty = await getUserAssignPropertyDetail(userId, page, limit,searchkey) as any
+        let buyPoperty = await getUserAssignBuyPropertyDetail(userId, page, limit,searchkey) as any
         if (!buyPoperty) {
             return res.status(400).send(false);
         }

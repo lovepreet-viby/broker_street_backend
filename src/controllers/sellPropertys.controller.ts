@@ -3,7 +3,7 @@ import { ISellProperty } from "../interfaces/sellProperty.interface";
 import {
     createSellPropertyDetail, getAllSellPropertyList,
     getSellPropertyDetail, updateSellPropertyDetail, deleteSellPropertyDetail,
-    checkSellPropertyId,getAllUserSellPropertyList
+    checkSellPropertyId,getAllUserSellPropertyList,getAllSellPropertyWithUserDetailData
 } from "../resource/sellPropertys.resource";
 import { isValidObjectId } from "mongoose";
 
@@ -209,6 +209,25 @@ export const getAllUserSellProperty = async (req: Request, res: Response, next: 
         }
 
         let sellPoperty = await getAllUserSellPropertyList(page, limit, userId) as any
+        if (!sellPoperty) {
+            return res.status(400).send(false);
+        }
+        return res.status(200).send(sellPoperty);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong!");
+    }
+};
+
+
+export const getAllSellPropertyWithUserDetail = async (req: Request, res: Response, next: Function) => {
+    try {
+
+        const page: number = parseInt(req.query?.page as string) || 1;
+        const limit: number = parseInt(req.query?.limit as string) || 10;
+
+        let sellPoperty = await getAllSellPropertyWithUserDetailData(page, limit) as any
         if (!sellPoperty) {
             return res.status(400).send(false);
         }

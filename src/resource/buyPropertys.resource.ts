@@ -3,7 +3,7 @@ const { ObjectId } = require("mongodb"); // If you're using CommonJS
 import { IBuyProperty } from "../interfaces/buyProperty.interface";
 
 export const createBuyPropertyDetail = async (data: IBuyProperty) => {
- 
+
   if (!data) {
     throw new Error("Data is empty");
   }
@@ -17,8 +17,8 @@ export const createBuyPropertyDetail = async (data: IBuyProperty) => {
 
 
 
-export const updateBuyPropertyDetail = async ( buyPropertyId :string , data: IBuyProperty) => {
- 
+export const updateBuyPropertyDetail = async (buyPropertyId: string, data: IBuyProperty) => {
+
   if (!data) {
     throw new Error("Data is empty");
   }
@@ -30,63 +30,72 @@ export const updateBuyPropertyDetail = async ( buyPropertyId :string , data: IBu
   return result;
 };
 
-export const deleteBuyPropertyDetail= async ( buyPropertyId :string) => {
- 
+export const deleteBuyPropertyDetail = async (buyPropertyId: string) => {
+
   if (!buyPropertyId) {
     throw new Error("id is empty");
   }
 
-  let result = await BuyProperty.findByIdAndUpdate( buyPropertyId, { isDeleted: true }, { new: true });
+  let result = await BuyProperty.findByIdAndUpdate(buyPropertyId, { isDeleted: true }, { new: true });
   if (!result) {
     return false;
   }
   return result;
 };
-  
 
 
-export const getBuyAllPropertyDetail= async (page: number , limit: number) => {
- 
-  let searchData = { isDeleted: false};
+
+export const getBuyAllPropertyDetail = async (page: number, limit: number, userId: string) => {
+
+  // let searchData = { isDeleted: false};
+
+  let searchData = userId ?
+    {
+      isDeleted: false,
+      userId: { $ne: new ObjectId(userId) }
+    } :
+    {
+      isDeleted: false
+    };
 
   const totalCount = await BuyProperty.count(searchData);
   const totalPages = Math.ceil(totalCount / limit);
 
-    let skip: number;
+  let skip: number;
   if (page !== 1) {
     skip = (page - 1) * limit;
   } else {
     skip = 0;
-  } 
+  }
 
-  let result1 = await BuyProperty.aggregate([
+  let result = await BuyProperty.aggregate([
     {
       $match: searchData // Optional match condition
     },
     {
       $lookup: {
-        from: 'users', 
-        localField: 'userId', 
-        foreignField: '_id', 
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
         as: 'userDetails'
       }
     },
     {
       $unwind: "$userDetails"
     },
-    ]).skip(skip).limit(limit)
+  ]).skip(skip).limit(limit)
 
-  let result = await BuyProperty.find(searchData).skip(skip).limit(limit)
-   if (!result) {
-      return false;
-    }
+  // let result = await BuyProperty.find(searchData).skip(skip).limit(limit)
+  if (!result) {
+    return false;
+  }
 
-    return {
+  return {
     totalCount: totalCount,
     totalPages: totalPages,
     currenPage: page,
-    buyProperty: result1,
-    };
+    buyProperty: result,
+  };
 };
 
 export const getBuyPropertyDetail = async (propertyId: string) => {
@@ -104,14 +113,14 @@ export const getBuyPropertyDetail = async (propertyId: string) => {
     },
     {
       $lookup: {
-        from: "users", 
-        localField: "userId", 
-        foreignField: "_id", 
-        as: "user_detail" 
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user_detail"
       }
     },
     {
-      $unwind: "$user_detail" 
+      $unwind: "$user_detail"
     }
   ])
 

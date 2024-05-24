@@ -13,10 +13,10 @@ router.put('/update', updateBuyProperty);
 router.delete('/delete', deleteBuyProperty);
 
 
-router.get('/all/buyproperty',getBuyAllProperty)
-router.get('/detail',getBuyProperty)
+router.get('/all/buyproperty',getBuyAllProperty) // buy proposal detail with user detail 
+router.get('/detail',getBuyProperty) // buy proposal in detail 
 
-router.get('/all/user',getAllUserBuyProperty)
+router.get('/all/user',getAllUserBuyProperty) // buy proposal acc to userID
 
 
 

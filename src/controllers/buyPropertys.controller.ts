@@ -144,8 +144,10 @@ export const getBuyAllProperty = async (req: Request, res: Response, next: Funct
 
         const page: number = parseInt(req.query?.page as string) || 1;
         const limit: number = parseInt(req.query?.limit as string) || 10;
+        const userId: string = req.query?.userId as string;
 
-        let buyPoperty = await getBuyAllPropertyDetail(page, limit) as any
+
+        let buyPoperty = await getBuyAllPropertyDetail(page, limit ,userId) as any
         if (!buyPoperty) {
             return res.status(400).send(false);
         }

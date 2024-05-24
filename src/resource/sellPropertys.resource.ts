@@ -177,3 +177,49 @@ export const getAllUserSellPropertyList = async (page: number, limit: number, us
     sellProperty: result,
   };
 };
+
+
+
+export const getAllSellPropertyWithUserDetailData = async (page: number, limit: number) => {
+
+  let searchData = { isDeleted: false };
+
+  const totalCount = await SellProperty.count(searchData);
+  const totalPages = Math.ceil(totalCount / limit);
+
+  let skip: number;
+  if (page !== 1) {
+    skip = (page - 1) * limit;
+  } else {
+    skip = 0;
+  }
+
+  let result = await SellProperty.aggregate([
+    {
+      $match: searchData // Optional match condition
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'userDetails'
+      }
+    },
+    {
+      $unwind: "$userDetails"
+    },
+  ]).skip(skip).limit(limit)
+
+  // let result = await SellProperty.find(searchData).skip(skip).limit(limit)
+  if (!result) {
+    return false;
+  }
+
+  return {
+    totalCount: totalCount,
+    totalPages: totalPages,
+    currenPage: page,
+    sellProperty: result,
+  };
+};

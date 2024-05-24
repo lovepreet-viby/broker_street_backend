@@ -35,8 +35,8 @@ app.get("/", (req: Request, res: Response) =>
 );
 
 app.use("/users",usersRoutes);
-app.use("/sellproperty",auth,sellPropertyRoutes);
-app.use("/buyproperty",auth,buyPropertyRoutes);
+app.use("/sellproperty",sellPropertyRoutes);
+app.use("/buyproperty",buyPropertyRoutes);
 app.use('/assignSell',assignSellPropertyRoutes) // auth setup in a routing file
 app.use('/assignBuy',assignBuyPropertyRoutes) // auth setup in a routing file
 

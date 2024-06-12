@@ -7,7 +7,7 @@ import {
 import { IBuyProperty } from "../interfaces/buyProperty.interface";
 import { isValidObjectId } from "mongoose";
 
-
+// Function to handle the creation of a new buy property
 export const createBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -45,9 +45,7 @@ export const createBuyProperty = async (req: Request, res: Response, next: Funct
     }
 };
 
-
-
-
+// Function to handle updating a buy property
 export const updateBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -87,7 +85,7 @@ export const updateBuyProperty = async (req: Request, res: Response, next: Funct
     }
 };
 
-
+// Function to handle deleting a buy property
 export const deleteBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -112,8 +110,7 @@ export const deleteBuyProperty = async (req: Request, res: Response, next: Funct
     }
 };
 
-
-
+// Function to handle file upload for buy property documents
 export const uploadBuyPropertyDocument = async (
     req: Request,
     res: Response,
@@ -138,7 +135,7 @@ export const uploadBuyPropertyDocument = async (
     }
 };
 
-
+// Function to get all buy properties with user details
 export const getBuyAllProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -159,6 +156,7 @@ export const getBuyAllProperty = async (req: Request, res: Response, next: Funct
     }
 };
 
+// Function to get buy property details by buy property ID
 export const getBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -180,6 +178,7 @@ export const getBuyProperty = async (req: Request, res: Response, next: Function
     }
 };
 
+// Function to get all buy properties by user ID
 export const getAllUserBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 

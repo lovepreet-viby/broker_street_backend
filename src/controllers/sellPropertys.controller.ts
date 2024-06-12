@@ -7,6 +7,7 @@ import {
 } from "../resource/sellPropertys.resource";
 import { isValidObjectId } from "mongoose";
 
+// Function to handle creating a new sell property
 export const createSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -49,7 +50,7 @@ export const createSellProperty = async (req: Request, res: Response, next: Func
 };
 
 
-
+// Function to get all sell properties
 export const getAllSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -70,7 +71,7 @@ export const getAllSellProperty = async (req: Request, res: Response, next: Func
     }
 };
 
-
+// Function to update a sell property
 export const updateSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -113,6 +114,7 @@ export const updateSellProperty = async (req: Request, res: Response, next: Func
     }
 };
 
+// Function to delete a sell property
 export const deleteSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -147,6 +149,7 @@ export const deleteSellProperty = async (req: Request, res: Response, next: Func
     }
 };
 
+// Function to upload sell property documents
 export const uploadSellPropertyDocument = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -171,7 +174,7 @@ export const uploadSellPropertyDocument = async (req: Request, res: Response, ne
     }
 };
 
-
+// Function to get sell property details by ID
 export const getSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -194,7 +197,7 @@ export const getSellProperty = async (req: Request, res: Response, next: Functio
 };
 
 
-
+// Function to get all sell properties for a specific user
 export const getAllUserSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -202,7 +205,6 @@ export const getAllUserSellProperty = async (req: Request, res: Response, next: 
         const page: number = parseInt(req.query?.page as string) || 1;
         const limit: number = parseInt(req.query?.limit as string) || 10;
         // const searchkey: string = req.query?.searchkey as string
-
 
         if (!isValidObjectId(userId)) {
             return res.status(400).send("Invalid userId");
@@ -220,7 +222,7 @@ export const getAllUserSellProperty = async (req: Request, res: Response, next: 
     }
 };
 
-
+// Function to get all sell properties with user details
 export const getAllSellPropertyWithUserDetail = async (req: Request, res: Response, next: Function) => {
     try {
 

@@ -3,6 +3,8 @@ import { IAssignSellProperty } from "../interfaces/assignSellProperty.interface"
 import { isValidObjectId } from "mongoose";
 import { createAssignSellPropertyDetail, updateAssignSellPropertyDetail, deleteAssignSellPropertyDetail, getUserAssignSellPropertyDetail } from "../resource/assignSellPropertys.resource";
 
+
+// Function to create an assigned sell property
 export const createAssignSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -37,6 +39,7 @@ export const createAssignSellProperty = async (req: Request, res: Response, next
     }
 };
 
+// Function to update an assigned sell property
 export const updateAssignSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -71,6 +74,7 @@ export const updateAssignSellProperty = async (req: Request, res: Response, next
     }
 };
 
+// Function to delete an assigned sell property
 export const deleteAssignSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -96,6 +100,7 @@ export const deleteAssignSellProperty = async (req: Request, res: Response, next
     }
 };
 
+// Function to get user-specific assigned sell properties
 export const getUserAssignSellProperty = async (req: Request, res: Response, next: Function) => {
     try {
 

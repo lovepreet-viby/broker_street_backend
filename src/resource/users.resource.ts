@@ -4,7 +4,7 @@ import User from "../schema/userSchema";
 const { ObjectId } = require("mongodb"); // If you're using CommonJS
 import SellProperty from "../schema/sellPropertySchema";
 
-
+// Function to create a new user
 export const createUser = async (data: IUser) => {
     if (!data) {
         throw new Error("Data is empty");
@@ -17,6 +17,7 @@ export const createUser = async (data: IUser) => {
     return result;
 };
 
+// Function to check if a phone number already exists
 export const checkByPhoneNumber = async (phoneNumber: number) => {
     if (!phoneNumber) {
         throw new Error("phoneNumber is empty");
@@ -29,6 +30,7 @@ export const checkByPhoneNumber = async (phoneNumber: number) => {
     return result;
 };
 
+// Function to get user details by user ID
 export const getUserDetail = async (userId: string) => {
     if (!userId) {
         throw new Error("user id is empty");
@@ -41,6 +43,7 @@ export const getUserDetail = async (userId: string) => {
     return result;
 };
 
+// Function to update user details by user ID
 export const updateUserById = async (userId: string, data: object) => {
     if (!userId || !data) {
         throw new Error("data is empty");
@@ -53,6 +56,7 @@ export const updateUserById = async (userId: string, data: object) => {
     return result;
 };
 
+// Function to get user property details with pagination
 export const userPropertyDetail = async (
     userId: string,
     page: number,
@@ -63,72 +67,7 @@ export const userPropertyDetail = async (
     }
 
     let searchData = { userId: new ObjectId(userId) , isDeleted: false}
-
-    // let pipeline = [
-    //     {
-    //         $match: searchData,
-    //     },
-    //     {
-    //         $lookup: {
-    //             from: "sellproperty", // Replace with the actual collection name for "Friends"
-    //             let: {
-    //                 userId: new ObjectId(userId), // Variable for another user's ID
-    //             },
-    //             pipeline: [
-    //                 {
-    //                     $match: {
-    //                         $expr: {
-    //                             $and: [
-    //                                 { $eq: ["$userId", "$$userId"] },
-    //                                 { $eq: ["$isDeleted", false] },
-    //                             ],
-    //                         },
-    //                     },
-    //                 },
-    //             ],
-    //             as: "sellproperty_detail",
-    //         },
-    //     },
-
-    //     // {
-    //     //     $lookup: {
-    //     //         from: "buyproperty", // Replace with the actual collection name for "Friends"
-    //     //         let: {
-    //     //             userId: new ObjectId(userId), // Variable for another user's ID
-    //     //         },
-    //     //         pipeline: [
-    //     //             {
-    //     //                 $match: {
-    //     //                     $expr: {
-    //     //                         $and: [
-    //     //                             { $eq: ["$userId", "$$userId"] },
-    //     //                             { $eq: ["$isDeleted", false] },
-    //     //                         ],
-    //     //                     },
-    //     //                 },
-    //     //             },
-    //     //         ],
-    //     //         as: "buyproperty_detail",
-    //     //     },
-    //     // },
-    //     // {
-    //     //   $lookup: {
-    //     //     from: 'sellproperty',
-    //     //     localField: '_id',
-    //     //     foreignField: 'userId',
-    //     //     as: 'sellproperty_detail'
-    //     //   }
-    //     // },
-    //     // {
-    //     //   $lookup: {
-    //     //     from: 'buyproperty',
-    //     //     localField: '_id',
-    //     //     foreignField: 'userId',
-    //     //     as: 'buyproperty_detail'
-    //     //   }
-    //     // }
-    // ]
-
+    
     const totalCount = await SellProperty.count(searchData);
     const totalPages = Math.ceil(totalCount / limit);
 
@@ -153,6 +92,7 @@ export const userPropertyDetail = async (
     };
 };
 
+// Function to create a new OTP
 export const createNewOtp = async (phoneNumber: number) => {
     const key = process.env.OTP_SECRET;
     const otp = 123456;
@@ -169,6 +109,7 @@ export const createNewOtp = async (phoneNumber: number) => {
     return { otp, hash: fullHash };
 };
 
+// Function to verify OTP
 export const verifyOtp = async (phoneNumber: number, hash: any, otp: any) => {
     const key = process.env.OTP_SECRET;
     let [hashValue, expiresIn] = hash.split(".");

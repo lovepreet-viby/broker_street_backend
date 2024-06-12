@@ -2,7 +2,7 @@ const { ObjectId } = require("mongodb"); // If you're using CommonJS
 import { IAssignBuyProperty } from "../interfaces/assignBuyProperty.interface";
 import AssignProperty from "../schema/assignBuyProperty";
 
-
+// Function to create assigned buy property details
 export const createAssignBuyPropertyDetail = async (data: IAssignBuyProperty[]) => {
 
   if (!data) {
@@ -16,7 +16,7 @@ export const createAssignBuyPropertyDetail = async (data: IAssignBuyProperty[]) 
   return result;
 };
 
-
+// Function to update assigned buy property details
 export const updateAssignBuyPropertyDetail = async (data: IAssignBuyProperty) => {
 
   if (!data) {
@@ -30,7 +30,7 @@ export const updateAssignBuyPropertyDetail = async (data: IAssignBuyProperty) =>
   return result;
 };
 
-
+// Function to delete assigned buy property details
 export const deleteAssignBuyPropertyDetail = async (assignId: string) => {
 
   if (!assignId) {
@@ -45,7 +45,7 @@ export const deleteAssignBuyPropertyDetail = async (assignId: string) => {
 };
 
 
-
+// Function to get user-specific assigned buy property details with pagination and optional search
 export const getUserAssignBuyPropertyDetail = async (userId: string, page: number, limit: number, searchkey: string) => {
 
   if (!userId) {

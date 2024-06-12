@@ -3,6 +3,7 @@ import { IAssignSellProperty } from "../interfaces/assignSellProperty.interface"
 import AssignProperty from "../schema/assignSellProperty";
 
 
+// Function to create assigned sell property details
 export const createAssignSellPropertyDetail = async (data: IAssignSellProperty[]) => {
 
   if (!data) {
@@ -16,7 +17,7 @@ export const createAssignSellPropertyDetail = async (data: IAssignSellProperty[]
   return result;
 };
 
-
+// Function to update assigned sell property details
 export const updateAssignSellPropertyDetail = async (data: IAssignSellProperty) => {
 
   if (!data) {
@@ -30,7 +31,7 @@ export const updateAssignSellPropertyDetail = async (data: IAssignSellProperty) 
   return result;
 };
 
-
+// Function to deleted an assigned sell property 
 export const deleteAssignSellPropertyDetail = async (assignId: string) => {
 
   if (!assignId) {
@@ -45,7 +46,7 @@ export const deleteAssignSellPropertyDetail = async (assignId: string) => {
 };
 
 
-
+// Function to get assigned sell property details for a specific user with pagination and optional search
 export const getUserAssignSellPropertyDetail = async (userId: string, page: number, limit: number, searchkey: string) => {
 
   if (!userId) {

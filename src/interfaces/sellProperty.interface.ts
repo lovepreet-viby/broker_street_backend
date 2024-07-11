@@ -11,4 +11,7 @@ export interface ISellProperty {
     amount: number;
     descriptions: string;
     userId:string;
+    adminLocationURL?: string;
+    adminAmountUnit? : string;
+    adminAmount?: number;
 }

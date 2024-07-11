@@ -2,6 +2,8 @@ import SellProperty from "../schema/sellPropertySchema";
 const { ObjectId } = require("mongodb"); // If you're using CommonJS
 import { ISellProperty } from "../interfaces/sellProperty.interface";
 
+
+// Function to create a new sell property detail
 export const createSellPropertyDetail = async (data: ISellProperty) => {
 
   if (!data) {
@@ -15,6 +17,7 @@ export const createSellPropertyDetail = async (data: ISellProperty) => {
   return result;
 };
 
+// Function to get all sell property listings with pagination and optional search key
 export const getAllSellPropertyList = async (page: number, limit: number, searchkey: string, userId: string) => {
 
   // if (!userId) {
@@ -22,7 +25,6 @@ export const getAllSellPropertyList = async (page: number, limit: number, search
   // }
 
   let searchData = searchkey ? {
-    // userId: { $ne: new ObjectId(userId) },
     isDeleted: false,
     $or: [
       { "taluka": { $regex: searchkey, $options: "i" } },
@@ -63,8 +65,7 @@ export const getAllSellPropertyList = async (page: number, limit: number, search
   };
 };
 
-
-
+// Function to update a sell property detail by sell property ID
 export const updateSellPropertyDetail = async (sellPropertyId: string, data: ISellProperty) => {
 
   if (!data) {
@@ -78,7 +79,7 @@ export const updateSellPropertyDetail = async (sellPropertyId: string, data: ISe
   return result;
 };
 
-
+// Function to soft delete a sell property 
 export const deleteSellPropertyDetail = async (sellPropertyId: string) => {
 
   if (!sellPropertyId) {
@@ -92,9 +93,7 @@ export const deleteSellPropertyDetail = async (sellPropertyId: string) => {
   return result;
 };
 
-
-
-
+// Function to get a sell property detail by sell property ID with user details
 export const getSellPropertyDetail = async (propertyId: string) => {
 
   if (!propertyId) {
@@ -126,7 +125,7 @@ export const getSellPropertyDetail = async (propertyId: string) => {
   return result;
 };
 
-
+// Function to check if a sell property exists by sell property ID
 export const checkSellPropertyId = async (sellPropertyId: string) => {
 
   if (!sellPropertyId) {
@@ -140,8 +139,7 @@ export const checkSellPropertyId = async (sellPropertyId: string) => {
   return result;
 };
 
-
-
+// Function to get all sell properties for a specific user with pagination
 export const getAllUserSellPropertyList = async (page: number, limit: number, userId: string) => {
 
   if (!userId) {
@@ -178,8 +176,7 @@ export const getAllUserSellPropertyList = async (page: number, limit: number, us
   };
 };
 
-
-
+// Function to get all sell properties with user details and pagination
 export const getAllSellPropertyWithUserDetailData = async (page: number, limit: number) => {
 
   let searchData = { isDeleted: false };

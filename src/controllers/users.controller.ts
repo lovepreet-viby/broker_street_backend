@@ -14,6 +14,7 @@ export const getUsers = async (req: Request, res: Response, next: Function) => {
   }
 };
 
+// Function to upload a user profile photo
 export const userProfilePhoto = async (
   req: Request,
   res: Response,
@@ -50,6 +51,7 @@ export const userProfilePhoto = async (
   }
 };
 
+// Function for user sign-up
 export const userSignUp = async (req: Request, res: Response, next: Function) => {
   try {
 
@@ -103,7 +105,7 @@ export const userSignUp = async (req: Request, res: Response, next: Function) =>
   }
 };
 
-
+// Function to check user's OTP
 export const checkUserOtp = async (req: Request, res: Response, next: Function) => {
   try {
 
@@ -174,7 +176,7 @@ export const checkUserOtp = async (req: Request, res: Response, next: Function) 
   }
 };
 
-
+// Function to resend OTP
 export const resendUserOtp = async (req: Request, res: Response, next: Function) => {
   try {
 
@@ -201,8 +203,7 @@ export const resendUserOtp = async (req: Request, res: Response, next: Function)
   }
 };
 
-
-
+// Function for user login
 export const userLogin = async (req: Request, res: Response, next: Function) => {
   try {
 
@@ -241,6 +242,7 @@ export const userLogin = async (req: Request, res: Response, next: Function) => 
   }
 };
 
+// Function to get user details
 export const userDetail = async (req: Request, res: Response, next: Function) => {
   try {
 
@@ -260,7 +262,7 @@ export const userDetail = async (req: Request, res: Response, next: Function) =>
   }
 };
 
-
+// Function to update user details
 export const updateUserDetail = async (req: Request, res: Response, next: Function) => {
   try {
 
@@ -283,6 +285,7 @@ export const updateUserDetail = async (req: Request, res: Response, next: Functi
   }
 };
 
+// Function to get user properties with pagination
 export const userProperty = async (req: Request, res: Response, next: Function) => {
   try {
 
@@ -304,3 +307,359 @@ export const userProperty = async (req: Request, res: Response, next: Function) 
     res.status(500).send("Something went wrong!");
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // Function to get all users
+// export const getUsers = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Responds with a success message
+//     res.status(200).send("Get users called");
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function to upload a user profile photo
+// export const userProfilePhoto = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve userId from query parameters
+//     let userId: string = req.query.userId as string;
+//     if (!userId) {
+//       // Respond with error if userId is not provided
+//       return res.status(400).send("UserId is required");
+//     }
+
+//     // Check for any error message in the request
+//     if ((req as any).errorMessage) {
+//       return res.status(400).send((req as any).errorMessage);
+//     }
+
+//     // Check if a file is uploaded
+//     if (!req.file) {
+//       return res.status(400).send('No file uploaded.');
+//     }
+
+//     // Construct the file path
+//     let filePath = process.env.BASE_URL + req.file.path;
+
+//     // Update user's profile picture
+//     let user = await updateUserById(userId, { profilePicture: filePath });
+//     if (!user) {
+//       return res.status(400).send(false);
+//     }
+
+//     // Respond with success message
+//     return res.status(200).send({ Message: "File upload successfully", data: filePath });
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     return res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function for user sign-up
+// export const userSignUp = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve data from request body
+//     let data = req.body;
+
+//     // Construct user data object
+//     let userData: IUser = {
+//       firstName: data.firstName,
+//       lastName: data.lastName,
+//       email: data.email,
+//       phoneNumber: data.phoneNumber,
+//       location: data.location
+//     }
+
+//     // Check for missing fields
+//     let checkObject = Object.keys(userData).filter((o) => !(userData as any)[o]);
+//     if (checkObject.length > 0) {
+//       return res.status(400).send(checkObject);
+//     }
+
+//     // Validate phone number
+//     if (!/^\d{10}$/.test(String(userData.phoneNumber))) {
+//       return res.status(400).send("Invalid phone number");
+//     }
+
+//     // Check if phone number already exists
+//     let isCheckPhoneNumber = await checkByPhoneNumber(userData.phoneNumber);
+//     if (isCheckPhoneNumber) {
+//       return res.status(400).send("This number already exits");
+//     }
+
+//     // Create new OTP for phone number verification
+//     let otpData = await createNewOtp(userData.phoneNumber);
+//     if (!otpData) {
+//       return res.status(400).send(false);
+//     }
+
+//     // Respond with OTP hash and phone number
+//     return res.status(200).send({ hash: otpData.hash, phoneNumber: data.phoneNumber });
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function to check user's OTP
+// export const checkUserOtp = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve data from request body
+//     let data: IUserOtp = req.body;
+//     let userData = {
+//       phoneNumber: data.phoneNumber,
+//       otp: data.otp,
+//       hash: data.hash
+//     }
+
+//     // Check for missing fields
+//     let checkObject = Object.keys(userData).filter((o) => !(userData as any)[o]);
+//     if (checkObject.length > 0) {
+//       return res.status(400).send(checkObject);
+//     }
+
+//     // Verify OTP
+//     let checkOtp = await verifyOtp(userData.phoneNumber, userData.hash, userData.otp);
+//     if (!checkOtp) {
+//       return res.status(400).send(false);
+//     }
+
+//     let user;
+//     if(data.newuser == true){    
+//       // Check if phone number already exists
+//       let checkPhoneNumber = await checkByPhoneNumber(userData.phoneNumber) as any;
+//       if (checkPhoneNumber) {
+//         return res.status(400).send("Phone number already exits");
+//       }
+
+//       // Create new user
+//       let userObj: IUser = {
+//         firstName: data.firstName,
+//         lastName: data.lastName,
+//         email: data.email,
+//         phoneNumber: data.phoneNumber,
+//         location: data.location
+//       }
+
+//       user = await createUser(userObj) as any;
+//       if (!user) {
+//         return res.status(400).send(false);
+//       }
+      
+//     } else {
+//       // Check user by phone number
+//       user = await checkByPhoneNumber(userData.phoneNumber) as any;
+//       if (!user) {
+//         return res.status(400).send("Invalid Phone number");
+//       }
+//     }
+
+//     // Create JWT token
+//     const secretKey: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : "lreigns";
+//     let token = await jwt.sign({
+//       user_id: user._id,
+//       phoneNumber: user.phoneNumber,
+//       role: user.role
+//     }, secretKey, { expiresIn: "24h" });
+
+//     // Respond with token and user details
+//     return res.status(200).send({ 
+//       token: token, 
+//       userId: user._id,  
+//       userName : user.firstName+" "+user.lastName,
+//       role : user.role,
+//       profilePicture : user.profilePicture
+//     });
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function to resend OTP
+// export const resendUserOtp = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve phone number from request body
+//     let phoneNumber: number = req.body.phoneNumber;
+//     if (!phoneNumber) {
+//       return res.status(400).send("phone number is required");
+//     }
+
+//     // Validate phone number
+//     if (!/^\d{10}$/.test(String(phoneNumber))) {
+//       return res.status(400).send("Invalid phone number");
+//     }
+
+//     // Create new OTP
+//     let otpData = await createNewOtp(phoneNumber);
+//     if (!otpData) {
+//       return res.status(400).send(false);
+//     }
+
+//     // Log OTP (for testing/debugging)
+//     console.log(otpData.otp);
+
+//     // Respond with OTP hash
+//     return res.status(200).send({ hash: otpData.hash });
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function for user login
+// export const userLogin = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve phone number from request body
+//     let phoneNumber: number = req.body.phoneNumber;
+//     if (!phoneNumber) {
+//       return res.status(400).send("phoneNumber is required");
+//     }
+
+//     // Validate phone number
+//     if (!/^\d{10}$/.test(String(phoneNumber))) {
+//       return res.status(400).send("Invalid phone number");
+//     }
+
+//     // Check if phone number exists
+//     let isCheckPhoneNumber = await checkByPhoneNumber(phoneNumber) as { _id: string, phoneNumber: number, role: string, lastName: string, firstName: string };
+//     if (!isCheckPhoneNumber) {
+//       return res.status(400).send("There was no account on this phone number");
+//     }
+
+//     // Create new OTP
+//     let otpData = await createNewOtp(phoneNumber);
+//     if (!otpData) {
+//       return res.status(400).send(false);
+//     }
+
+//     // Respond with OTP hash and phone number
+//     return res.status(200).send({ hash: otpData.hash, phoneNumber: isCheckPhoneNumber.phoneNumber });
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function to get user details
+// export const userDetail = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve userId from query parameters
+//     let userId: string = req.query.userId as string;
+//     if (!userId) {
+//       return res.status(400).send("UserId is required");
+//     }
+
+//     // Get user details by userId
+//     let user = await getUserDetail(userId);
+//     if (!user) {
+//       return res.status(400).send(false);
+//     }
+
+//     // Respond with user details
+//     res.status(200).send(user);
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function to update user details
+// export const updateUserDetail = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve data from request body
+//     let data = req.body;
+//     let userData = {
+//       firstName: data.firstName,
+//       lastName: data.lastName,
+//       email: data.email,
+//       location: data.location
+//     }
+
+//     // Update user details by userId
+//     let user = await updateUserById(req.body.userId, userData);
+//     if (!user) {
+//       return res.status(400).send(false);
+//     }
+
+//     // Respond with updated user details
+//     res.status(200).send(user);
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };
+
+// // Function to get user properties with pagination
+// export const userProperty = async (req: Request, res: Response, next: Function) => {
+//   try {
+//     // Retrieve userId, page, and limit from query parameters
+//     const userId: string = req.query?.userId as string;
+//     const page: number = parseInt(req.query?.page as string) || 1;
+//     const limit: number = parseInt(req.query?.limit as string) || 10;
+
+//     // Validate userId
+//     if (!isValidObjectId(userId)) {
+//       return res.status(400).send("Invalid userId");
+//     }
+
+//     // Get user properties with pagination
+//     let user = await userPropertyDetail(userId, page, limit);
+//     if (!user) {
+//       return res.status(400).send(false);
+//     }
+
+//     // Respond with user properties
+//     res.status(200).send(user);
+
+//   } catch (err) {
+//     console.log(err);
+//     // Responds with an error message if something goes wrong
+//     res.status(500).send("Something went wrong!");
+//   }
+// };

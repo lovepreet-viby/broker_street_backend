@@ -3,6 +3,8 @@ import { IAssignBuyProperty } from "../interfaces/assignBuyProperty.interface";
 import { isValidObjectId } from "mongoose";
 import { createAssignBuyPropertyDetail, updateAssignBuyPropertyDetail, deleteAssignBuyPropertyDetail, getUserAssignBuyPropertyDetail } from "../resource/assignBuyPropertys.resource";
 
+
+// Function to create an assigned buy property
 export const createAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -37,6 +39,7 @@ export const createAssignBuyProperty = async (req: Request, res: Response, next:
     }
 };
 
+// Function to update an assigned buy property
 export const updateAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -71,6 +74,7 @@ export const updateAssignBuyProperty = async (req: Request, res: Response, next:
     }
 };
 
+// Function to delete an assigned buy property
 export const deleteAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 
@@ -96,6 +100,7 @@ export const deleteAssignBuyProperty = async (req: Request, res: Response, next:
     }
 };
 
+// Function to get user-specific assigned buy property details
 export const getUserAssignBuyProperty = async (req: Request, res: Response, next: Function) => {
     try {
 

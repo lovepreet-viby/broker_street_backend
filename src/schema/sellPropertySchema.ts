@@ -15,6 +15,10 @@ interface ISellProperty extends Document {
     descriptions: string;
     isDeleted: boolean;
     userId:ObjectId;
+
+    adminLocationURL?: string;
+    adminAmountUnit : string;
+    adminAmount: number;
 }
 
 // Define the schema
@@ -31,7 +35,10 @@ const sellPropertySchema: Schema<ISellProperty> = new Schema({
     uploadImagePath:[{ type: String }],
     amount: { type: Number, default: null },
     amountUnit: { type: String, default: null },
-
+    
+    adminLocationURL: { type: String },
+    adminAmount: { type: Number, default: null },
+    adminAmountUnit: { type: String, default: null },
     descriptions: { type: String, default: null },
     isDeleted : { type: Boolean, default: false },
 });

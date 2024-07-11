@@ -2,6 +2,8 @@ import BuyProperty from "../schema/buyPropertySchema";
 const { ObjectId } = require("mongodb"); // If you're using CommonJS
 import { IBuyProperty } from "../interfaces/buyProperty.interface";
 
+
+// Function to create a new buy property detail
 export const createBuyPropertyDetail = async (data: IBuyProperty) => {
 
   if (!data) {
@@ -16,7 +18,7 @@ export const createBuyPropertyDetail = async (data: IBuyProperty) => {
 };
 
 
-
+// Function to update  a buy property detail
 export const updateBuyPropertyDetail = async (buyPropertyId: string, data: IBuyProperty) => {
 
   if (!data) {
@@ -30,6 +32,7 @@ export const updateBuyPropertyDetail = async (buyPropertyId: string, data: IBuyP
   return result;
 };
 
+// Function to delete a buy property detail 
 export const deleteBuyPropertyDetail = async (buyPropertyId: string) => {
 
   if (!buyPropertyId) {
@@ -44,7 +47,7 @@ export const deleteBuyPropertyDetail = async (buyPropertyId: string) => {
 };
 
 
-
+// Function to get all buy property details with user detail
 export const getBuyAllPropertyDetail = async (page: number, limit: number, userId: string) => {
 
   // let searchData = { isDeleted: false};
@@ -98,6 +101,7 @@ export const getBuyAllPropertyDetail = async (page: number, limit: number, userI
   };
 };
 
+// Function to get a buy property details by ID
 export const getBuyPropertyDetail = async (propertyId: string) => {
 
 
@@ -130,7 +134,7 @@ export const getBuyPropertyDetail = async (propertyId: string) => {
   return result;
 };
 
-
+// Function to get all buy properties by user ID 
 export const getAllUserBuyPropertyList = async (page: number, limit: number, userId: string) => {
 
   if (!userId) {

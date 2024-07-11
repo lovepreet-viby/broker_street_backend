@@ -68,7 +68,7 @@ export const userPropertyDetail = async (
         throw new Error("userid is empty");
     }
 
-    let searchData = { userId: new ObjectId(userId), isDeleted: false }
+    let searchData = { userId: new ObjectId(userId) , isDeleted: false}    
     const totalCount = await SellProperty.count(searchData);
     const totalPages = Math.ceil(totalCount / limit);
 

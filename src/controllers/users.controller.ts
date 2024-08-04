@@ -21,13 +21,13 @@ export const getUsers = async (req: Request, res: Response, next: Function) => {
     }
 };
 
+// Function to upload a user profile photo
 export const userProfilePhoto = async (
     req: Request,
     res: Response,
     next: Function
 ) => {
     try {
-        let profilePicture = req.body.file;
         let userId: string = req.query.userId as string;
         if (!userId) {
             return res.status(400).send("UserId is required");
@@ -37,11 +37,11 @@ export const userProfilePhoto = async (
             return res.status(400).send((req as any).errorMessage);
         }
 
-        if (!profilePicture) {
+        if (!req.file) {
             return res.status(400).send("No file uploaded.");
         }
 
-        let filePath = process.env.AZURE_BLOB_STORAGE_URL + profilePicture.path;
+        let filePath = process.env.BASE_URL + req.file.path;
 
         let user = await updateUserById(userId, { profilePicture: filePath });
         if (!user) {
@@ -57,6 +57,7 @@ export const userProfilePhoto = async (
     }
 };
 
+// Function for user sign-up
 export const userSignUp = async (
     req: Request,
     res: Response,
@@ -116,6 +117,7 @@ export const userSignUp = async (
     }
 };
 
+// Function to check user's OTP
 export const checkUserOtp = async (
     req: Request,
     res: Response,
@@ -186,19 +188,22 @@ export const checkUserOtp = async (
             { expiresIn: "24h" }
         );
 
-        return res.status(200).send({
-            token: token,
-            userId: user._id,
-            userName: user.firstName + " " + user.lastName,
-            role: user.role,
-            profilePicture: user.profilePicture,
-        });
+        return res
+            .status(200)
+            .send({
+                token: token,
+                userId: user._id,
+                userName: user.firstName + " " + user.lastName,
+                role: user.role,
+                profilePicture: user.profilePicture,
+            });
     } catch (err) {
         console.log(err);
         res.status(500).send("Something went wrong!");
     }
 };
 
+// Function to resend OTP
 export const resendUserOtp = async (
     req: Request,
     res: Response,
@@ -227,6 +232,7 @@ export const resendUserOtp = async (
     }
 };
 
+// Function for user login
 export const userLogin = async (
     req: Request,
     res: Response,
@@ -269,16 +275,19 @@ export const userLogin = async (
             return res.status(400).send(false);
         }
 
-        return res.status(200).send({
-            hash: otpData.hash,
-            phoneNumber: isCheckPhoneNumber.phoneNumber,
-        });
+        return res
+            .status(200)
+            .send({
+                hash: otpData.hash,
+                phoneNumber: isCheckPhoneNumber.phoneNumber,
+            });
     } catch (err) {
         console.log(err);
         res.status(500).send("Something went wrong!");
     }
 };
 
+// Function to get user details
 export const userDetail = async (
     req: Request,
     res: Response,
@@ -301,6 +310,7 @@ export const userDetail = async (
     }
 };
 
+// Function to update user details
 export const updateUserDetail = async (
     req: Request,
     res: Response,
@@ -326,6 +336,7 @@ export const updateUserDetail = async (
     }
 };
 
+// Function to get user properties with pagination
 export const userProperty = async (
     req: Request,
     res: Response,

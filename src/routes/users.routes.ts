@@ -18,18 +18,29 @@ const router = express.Router();
 
 router.get("/", getUsers);
 
-router.post(
-    "/upload",
-    upload.single("user"),
-    fileUploadMiddleware,
-    userProfilePhoto
-);
+// The upload middleware handles file uploads
+router.post("/upload", upload.single("user"), userProfilePhoto);
+
+// Define route for user sign up
 router.post("/signup", userSignUp);
+
+// Define route for checking user OTP
 router.post("/checkOtp", checkUserOtp);
+
+// Define route for resending user OTP
 router.post("/resendOtp", resendUserOtp);
+
+// Define route for user sign in
 router.post("/signin", userLogin);
+
+// Define route for getting user details
 router.get("/detail", auth, userDetail);
+
+// Define route for updating user details
 router.put("/update", auth, updateUserDetail);
+
+// Define route for getting user property details
+router.get("/property", auth, userProperty);
 
 // property api
 router.get("/property", auth, userProperty);

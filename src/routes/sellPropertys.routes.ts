@@ -11,6 +11,7 @@ import {
     getAllUserSellProperty,
     getAllSellPropertyWithUserDetail,
 } from "../controllers/sellPropertys.controller";
+import fileUploadMiddleware from "../middlewares/blobUpload";
 
 const router = express.Router();
 

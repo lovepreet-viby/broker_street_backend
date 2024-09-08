@@ -5,6 +5,9 @@ const { ObjectId } = require("mongodb"); // If you're using CommonJS
 import SellProperty from "../schema/sellPropertySchema";
 import { sendOtp } from "../constants/messageService";
 import Message from "../schema/messageServiceSchema";
+import * as jwt from "jsonwebtoken";
+import { ITokenUserData } from "../interfaces/auth";
+
 
 // Function to create a new user
 export const createUser = async (data: IUser) => {
@@ -99,13 +102,12 @@ export const createNewOtp = async (phoneNumber: number) => {
     const key = process.env.OTP_SECRET;
     const otp = 123456;
     // const otp = Math.floor(100000 + Math.random() * 900000);
-
-
-    let message =  await sendOtp("8057893832", "123451")
-    let result =  await Message.create(message)
-    if(!result){
-        return false
-    }
+    // console.log("otp",otp)
+    // let message =  await sendOtp(phoneNumber, otp)
+    // let result =  await Message.create(message)
+    // if(!result){
+    //     return false
+    // }
 
     const otpValidityTime = 5 * 60 * 1000;
     const expiresIn = Date.now() + otpValidityTime;
@@ -149,3 +151,11 @@ export const getUserDetailByRole = async(role: string)=>{
     }
     return result;
 }   
+
+export const tokenGenerator = async (
+    userData: ITokenUserData,
+    expiresIn: string = '24h', // Default value for expiresIn
+    secretKey: string = process.env.JWT_SECRET ?? 'lreigns' // Default value for secretKey
+  ): Promise<string> => {
+    return jwt.sign(userData, secretKey, { expiresIn });
+  };

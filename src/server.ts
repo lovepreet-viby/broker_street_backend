@@ -5,16 +5,12 @@ import auth, { AdminAuth } from "./middlewares/auth";
 import usersRoutes from "./routes/users.routes";
 import sellPropertyRoutes from "./routes/sellPropertys.routes";
 import buyPropertyRoutes from "./routes/buyPropertys.routes";
-import assignSellPropertyRoutes from "./routes/assignSellPropertys.routes"
+import assignSellPropertyRoutes from "./routes/assignSellPropertys.routes";
 
-import assignBuyPropertyRoutes from "./routes/assignBuyPropertys.routes"
+import assignBuyPropertyRoutes from "./routes/assignBuyPropertys.routes";
 
-
-
-
-import cors from "cors"; 
-import * as path from 'path';  // Import the 'path' module
-
+import cors from "cors";
+import * as path from "path"; // Import the 'path' module
 
 import { run } from "./database/connection";
 import errorHandler from "./middlewares/errorHandler";
@@ -26,23 +22,23 @@ const server = http.createServer(app);
 const port = process.env.PORT;
 run().catch(console.dir);
 
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 
 app.get("/", (req: Request, res: Response) =>
   res.status(200).send("Welcome to Viby Info Media Pvt. Limited")
 );
 
-app.use("/users",usersRoutes);
-app.use("/sellproperty",sellPropertyRoutes);
-app.use("/buyproperty",buyPropertyRoutes);
-app.use('/assignSell',assignSellPropertyRoutes) // auth setup in a routing file
-app.use('/assignBuy',assignBuyPropertyRoutes) // auth setup in a routing file
-
-
-
-
+app.use("/users", usersRoutes);
+app.use("/sellproperty", sellPropertyRoutes);
+app.use("/buyproperty", buyPropertyRoutes);
+app.use("/assignSell", assignSellPropertyRoutes); // auth setup in a routing file
+app.use("/assignBuy", assignBuyPropertyRoutes); // auth setup in a routing file
 
 // app.use(errorHandler);
 

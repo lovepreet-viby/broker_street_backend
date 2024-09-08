@@ -2,13 +2,14 @@ import express from "express";
 import {
     getUsers,
     userSignUp,
-    checkUserOtp,
     resendUserOtp,
     userLogin,
     userDetail,
     updateUserDetail,
     userProfilePhoto,
     userProperty,
+    validateSignupOtpAndCreateUser,
+    validateLoginOtp,
 } from "../controllers/users.controller";
 import auth from "../middlewares/auth";
 import upload from "../middlewares/uploadFile";
@@ -24,8 +25,10 @@ router.post("/upload", upload.single("user"), userProfilePhoto);
 // Define route for user sign up
 router.post("/signup", userSignUp);
 
-// Define route for checking user OTP
-router.post("/checkOtp", checkUserOtp);
+// Define route for checking user OTP and creating new user
+router.post("/signupOtp", validateSignupOtpAndCreateUser);
+
+router.post("/loginOtp", validateLoginOtp);
 
 // Define route for resending user OTP
 router.post("/resendOtp", resendUserOtp);

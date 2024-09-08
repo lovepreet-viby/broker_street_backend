@@ -4,13 +4,7 @@ export interface IUser {
   email:string;
   location:string
   phoneNumber : number;
-}
-export interface IUser2 {
-  firstName: string;
-  lastName: string;
-  email:string;
-  location:string
-  phoneNumber : number;
+  [key: string]: any;
 }
 
 export interface IUserOtp {

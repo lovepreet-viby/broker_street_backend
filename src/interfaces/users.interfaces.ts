@@ -5,6 +5,13 @@ export interface IUser {
   location:string
   phoneNumber : number;
 }
+export interface IUser2 {
+  firstName: string;
+  lastName: string;
+  email:string;
+  location:string
+  phoneNumber : number;
+}
 
 export interface IUserOtp {
   phoneNumber: number;

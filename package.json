@@ -9,7 +9,7 @@
     "start:prod": "node dist/server.js",
     "start": "node server.js",
     "start:dev": "env-cmd -f .env.development nodemon dist/server.js",
-    "dev": "env-cmd -f .env.development nodemon src/server.ts",
+    "dev": "nodemon src/server.ts",
     "seeder": "node src/database/seeds.ts"
   },
   "keywords": [],

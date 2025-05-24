@@ -42,6 +42,8 @@ app.use("/assignBuy", assignBuyPropertyRoutes); // auth setup in a routing file
 
 // app.use(errorHandler);
 
+console.log(port);
+
 server.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

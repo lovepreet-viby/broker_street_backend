@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && cp -r ./tsconfig.json ./dist && cp ./package.json ./dist && cp ./src/constants/strong-arbor-367509-firebase-adminsdk-3zmc7-ba5893591b.json ./dist/constants",
-    "build:windows":"tsc && env-cmd -f .env.development",
+    "build": "tsc && cp -r ./tsconfig.json ./dist && cp ./package.json ./dist && mkdir -p ./dist/constants && cp ./src/constants/strong-arbor-367509-firebase-adminsdk-3zmc7-ba5893591b.json ./dist/constants",
+    "build:prod": "tsc",
     "start:prod": "node dist/server.js",
     "start": "node server.js",
-    "start:dev": "node dist/server.js",
+    "start:dev": "env-cmd -f .env.development nodemon dist/server.js",
     "dev": "env-cmd -f .env.development nodemon src/server.ts",
     "seeder": "node src/database/seeds.ts"
   },

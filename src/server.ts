@@ -24,9 +24,15 @@ run().catch(console.dir);
 
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
+
+const allowedOrigins = process.env.CORS;
+const allowedOriginsArray = allowedOrigins
+  ?.split(",")
+  .map((item) => item.trim());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    credentials: true,
+    origin: allowedOriginsArray,
   })
 );
 

@@ -1,5 +1,5 @@
-export interface ITokenUserData{
-    user_id: string,
-    phoneNumber: number,
-    role: string
+export interface ITokenUserData {
+  user_id: string;
+  email: string;
+  role: string;
 }

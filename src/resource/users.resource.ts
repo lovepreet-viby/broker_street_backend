@@ -1,3 +1,4 @@
+const nodemailer = require("nodemailer");
 import crypto from "crypto";
 import { IUser, IUserProfileUpdate } from "../interfaces/users.interfaces";
 import User from "../schema/userSchema";
@@ -112,17 +113,9 @@ export const userPropertyDetail = async (
 
 // Function to create a new OTP
 export const createNewOtp = async (email: String) => {
-  console.log("CREATED EMAIL-->", email);
 
   const key = process.env.OTP_SECRET;
-  const otp = 123456;
-  // const otp = Math.floor(100000 + Math.random() * 900000);
-  // console.log("otp",otp)
-  // let message =  await sendOtp(phoneNumber, otp)
-  // let result =  await Message.create(message)
-  // if(!result){
-  //     return false
-  // }
+  const otp = Math.floor(100000 + Math.random() * 900000);
 
   const otpValidityTime = 5 * 60 * 1000;
   const expiresIn = Date.now() + otpValidityTime;
@@ -133,7 +126,8 @@ export const createNewOtp = async (email: String) => {
     .update(data)
     .digest("hex");
   const fullHash = `${hash}.${expiresIn}`;
-  console.log(fullHash, " : ", otp);
+  console.log(otp)
+  await otpSender(otp,email)
   return { otp, hash: fullHash };
 };
 
@@ -175,3 +169,33 @@ export const tokenGenerator = async (
 ): Promise<string> => {
   return jwt.sign(userData, secretKey, { expiresIn });
 };
+
+export const otpSender = async (otp: any, email: String) => {
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USERNAME,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+  console.log(transporter)
+  console.log(otp,"send otp");
+
+  await transporter
+    .sendMail({
+      from: "'Broker Streets'" + process.env.SMTP_USERNAME,
+      to: email,
+      subject: "OTP to Verify email",
+      html: `<b><h1>Broker Streets </h1>
+        <h2>${otp} is the otp to verify your email.</h2>
+        </b>`,
+    }).then((result: any) => {
+        console.log("OTP sent to user");
+    })
+    .catch((err: any) => {
+      console.log(err);
+    });
+};
+
